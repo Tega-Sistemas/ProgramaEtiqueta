@@ -1,40 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="stylesheet" href="./style.css" />
-</head>
-
-<body>
-  <div class="page">
-    <div class="form">
-      <div class="card"><label>Código Barras</label><input type="text" name="codbarra" id="codbarra"
-          onfocusout="lostInputFocus()" /><button id="button">Confirmar</button>
-        <div class="row">
-          <div class="contadores"><span>Etiquetas válidas <span id="etiquetasValidas">0</span></span><span>Etiquetas
-              inválidas <span id="etiquetasInvalidas">0</span></span></div>
+  <body>
+    <div class="page">
+      <div class="form">
+        <div class="card">
+          <label>Código Barras</label
+          ><input
+            type="text"
+            name="codbarra"
+            id="codbarra"
+            onfocusout="lostInputFocus()"
+          /><button id="button">Confirmar</button>
+          <div class="row">
+            <div class="contadores">
+              <span>Etiquetas válidas <span id="etiquetasValidas">0</span></span
+              ><span
+                >Etiquetas inválidas
+                <span id="etiquetasInvalidas">0</span></span
+              >
+            </div>
+          </div>
+          <div class="responseList">
+            <p id="process"></p>
+          </div>
+          <button id="clearPage">Limpar página</button>
         </div>
-        <div class="responseList">
-          <div id="responseDanger" class="responseCard danger">
-            <p id="dangerText"></p>
-          </div>
-          <div id="responseAlert" class="responseCard alert">
-            <p id="alertText"></p>
-          </div>
-          <p id="process"></p>
-        </div><button id="clearPage">Limpar página</button>
+      </div>
+      <div class="form history">
+        <h3>Histórico de leitura de etiqueta</h3>
+        <div class="card">
+          <ul id="historicoLeitura"></ul>
+        </div>
       </div>
     </div>
-    <div class="form history">
-      <h3>Histórico de leitura de etiqueta</h3>
-      <div class="card">
-        <ul id="historicoLeitura"></ul>
-      </div>
-    </div>
-  </div>
-  <script type="text/javascript" src="./jquery.min.js"></script>
-  <script>var count = 0; var etiquetaValida = 0; var etiquetaInvalida = 0; var readed = false; var url; $("#responseDanger").hide(); $("#responseSuccess").hide(); $("#responseAlert").hide(); var histLeitura = []; var histEtiquetaSuccess; var vars = [], hash; var hashes = window.location.href.slice(window.location.href.indexOf("?") + 1).split("&"); for (var i = 0; i < hashes.length; i++) { hash = hashes[i].split("="); vars.push(hash[0]); vars[hash[0]] = hash[1]; } vars; url = `${vars.urlApi}/rest/pprcEtiquetaEntEstoqueLoteNewRest`; function verifyReturn(msg) { switch (msg) { case "Etiqueta Inválida": $("#responseDanger").show(); $("#dangerText").text("Etiqueta inválida, favor verificar os dados"); break; case "Entrada Pela Etiqueta já Efetudada": $("#responseDanger").show(); $("#dangerText").text(msg); break; } } function lostInputFocus() { var validLostInput = $("#codbarra").val(); if (validLostInput != "" && validLostInput != null) { $("#button").click(); $("#codbarra").focus(); } } $(document).ready(function () { $('#clearPage').click(function () { document.location.reload(true); }); $(document).keypress(function (e) { if (e.which == 13) { $("#button").focus(); } }); $("button").click(function (e) { $("#responseDanger").hide(); $("#responseSuccess").hide(); var readBarcode = $("#codbarra").val(); if (readBarcode != "") { var parm = new Object(); (parm.UsuarioId = vars.user), (parm.LocalEstoqueId = vars.local), (parm.CodigoBarras = readBarcode.trim()); $.ajax({ url: url, method: "POST", dataType: "json", contentType: "application/json;charset=UTF-8", data: JSON.stringify(parm), beforeSend: function () { $("#alertText").text("Processando..."); $("#responseAlert").show(); }, }).done(function (msg) { if (msg.Msg1 == "") { msg.Msg1 = `${msg.ProdutoCodigo} ${msg.ProdutoDescricao} ${msg.RevestimentoId} ${msg.RevestimentoDescricao}`; histLeitura.push(`<li style="color:#041A56;">Lote:${msg.LoteProducaoId} Etiq:${msg.EtiquetaProducaoId} ${msg.Msg1} </li>`); etiquetaValida++; $("#etiquetasValidas").text(etiquetaValida); } else { verifyReturn(msg.Msg1); if (readBarcode != "") histLeitura.push(`<li style="color:red;">${readBarcode} - ${msg.Msg1}</li>`); etiquetaInvalida++; $("#etiquetasInvalidas").text(etiquetaInvalida); } $("#codbarra").focus(); $("#historicoLeitura").html(histLeitura); }).fail(function (jqXHR, textStatus, msg) { $("#dangerText").text(msg.Msg1); $("#responseDanger").show(); }); } else { $("#alertText").text("Favor, informar um código de etiqueta"); $("#responseAlert").show(); } $("#codbarra").val(""); $("#codbarra").focus(); $("#historicoLeitura").html(histLeitura); if (count >= histLeitura.length) { $("#responseAlert").hide(); } else { $("#alertText").text("Processando, favor não fechar a página"); $("#responseAlert").show(); } console.log(count); console.log(histLeitura.length); if (readBarcode != null) { count++; } }); }); </script>
-</body>
+    <script type="text/javascript" src="./jquery.min.js"></script>
+    <script>
 
+      var url;
+      var count = 0;
+      var etiquetaValida = 0;
+      var etiquetaInvalida = 0;
+      var readed = false;
+      var histLeitura = [];
+      var histEtiquetaSuccess;
+      var vars = [], hash;
+      var hashes = window.location.href.slice(window.location.href.indexOf("?") + 1).split("&");
+
+      for (var i = 0; i < hashes.length; i++) {
+        hash = hashes[i].split("=");
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+      } vars;
+
+      url = `${vars.urlApi}/rest/pprcEtiquetaEntEstoqueLoteNewRest`;
+
+      function lostInputFocus() {
+        var validLostInput = $("#codbarra").val();
+        if (validLostInput != "" && validLostInput != null) {
+          $("#button").click();
+          $("#codbarra").focus();
+        }
+      }
+
+      $(document).ready(function () {
+        $("#clearPage").click(function () {
+          document.location.reload(true);
+        });
+        $(document).keypress(function (e) {
+          if (e.which == 13) {
+            $("#button").focus();
+          }
+        });
+
+        $("button").click(function (e) {
+          var readBarcode = $("#codbarra").val();
+          if (readBarcode != "") {
+            var parm = new Object();
+              (parm.UsuarioId = vars.user),
+              (parm.EmpresaId = vars.Empresa),
+              (parm.CodigoBarras = readBarcode.trim());
+            $.ajax({
+              url: url,
+              method: "POST",
+              dataType: "json",
+              contentType: "application/json;charset=UTF-8",
+              data: JSON.stringify(parm),
+              /*beforeSend: function () {
+                $("#alertText").text("Processando...");
+                $("#responseAlert").show();
+              },*/
+            })
+              .done(function (msg) {
+                if (msg.MensagemErro == "") {
+                  msg.Mensagem = `${msg.VolumeLoteProdutoId} ${msg.VolumeLoteProdutoCodigoReferencial} ${msg.VolumeLoteProdutoDescricao} ${msg.VolumeLoteReferenciaId} ${msg.VolumeLoteReferenciaDescricao}`;
+                  histLeitura.push(
+                    `<li style="color:#041A56;">Lote:${msg.VolumeLoteProdutoId} Etiq:${readBarcode} ${msg.Mensagem} </li>`
+                  );
+                  etiquetaValida++;
+                  $("#etiquetasValidas").text(etiquetaValida);
+                } else {
+                  if (readBarcode != "")
+                    histLeitura.push(
+                      `<li style="color:red;">${readBarcode} - ${msg.MensagemErro}</li>`
+                    );
+                  etiquetaInvalida++;
+                  $("#etiquetasInvalidas").text(etiquetaInvalida);
+                }
+                $("#codbarra").focus();
+                $("#historicoLeitura").html(histLeitura);
+              })
+              .fail(function (jqXHR, textStatus, msg) {
+                $("#dangerText").text(msg.MensagemErro);
+                $("#responseDanger").show();
+              });
+          } else {
+            $("#alertText").text("Favor, informar um código de etiqueta");
+            $("#responseAlert").show();
+          }
+          $("#codbarra").val("");
+          $("#codbarra").focus();
+          $("#historicoLeitura").html(histLeitura);
+          if (count >= histLeitura.length) {
+            $("#responseAlert").hide();
+          } else {
+            $("#alertText").text("Processando, favor não fechar a página");
+            $("#responseAlert").show();
+          }
+          console.log(count);
+          console.log(histLeitura.length);
+          if (readBarcode != null) {
+            count++;
+          }
+        });
+      });
+    </script>
+  </body>
 </html>
