@@ -15,11 +15,8 @@
                <div class="subcard">
                   <p class="cargaInfo">Carga:<span id="codCarga"></span></p>
                   <p class="cargaInfo">Nº Pedido:<span id="nroPedido"></span></p>
-                  <p class="checkbox_box"><input type="checkbox" id="estorna" class="checkBox"
-                        name="estorna"><span>Estorna
-                        etiqueta?</span></p><label>Código de Barra</label><input type="text" name="codbarra"
-                     id="codbarra" onfocusout="lostInputFocus()" /><button id="button"
-                     class="sendButton">Confirmar</button>
+                  <label>Código de Barra</label><input type="text" name="codbarra" id="codbarra"
+                     onfocusout="lostInputFocus()" /><button id="button" class="sendButton">Confirmar</button>
                </div>
                <div class="subcard">
                   <div class="contadores">
@@ -29,8 +26,10 @@
                      <p>Lidas Duplicadas <span id="etiqeutasDuplicadas">0</span></p>
                      <p>Qtde. Palete <span id="qtdePalete">0</span></p>
                   </div>
-                  <div class="btn-group" style="width:100%"><button id="btnZeraPalete" class="zeraPateleBtn">Zerar Qtde.
-                        Palete</button><button id="clearPage">Limpar página</button></div>
+                  <div class="btn-group" style="width:100%">
+                     <button id="btnZeraPalete" class="zeraPateleBtn">Zerar Qtde. Palete</button>
+                     <button id="clearPage">Limpar página</button>
+                  </div>
                </div>
             </div>
          </div>
@@ -41,8 +40,6 @@
             <div id="responseAlert" class="responseCard alert">
                <p id="alertText"></p>
             </div>
-            <p><span>Impressora:<span style="color:brown;" id="nomeImp"></span></span><span>Etiqueta:<span
-                     style="color:brown;" id="descEtiqueta"></span></span></p>
          </div>
       </div>
    </div>
@@ -84,9 +81,7 @@
       $("#etiquetasValidas").text(etiquetaValida);
       $("#codCarga").text(`${codCarga} ${decodeURI(vars.desccarga)}`);
       $("#nroPedido").text(vars.pedido);
-      $("#nomeImp").text(decodeURI(vars.nomeimp));
-      $("#descEtiqueta").text(decodeURI(vars.descetiq));
-      url = `${vars.urlApi}/rest/pprcleretiquetacargacomimpressaorest`;
+      url = `${vars.urlApi}/rest/pprcInserirPedidoCargaEtiqProducaoRest`;
       function hideMsgs() {
          $("#responseDanger").hide();
          $("#responseSuccess").hide();
@@ -111,9 +106,6 @@
             $("#codbarra").focus();
          }
       }
-      $("#estorna").click(() => {
-         $("#codbarra").focus();
-      });
       $(document).ready(function () {
          $("#clearPage").click(function () {
             document.location.reload(true);
@@ -130,7 +122,6 @@
          $("button").click(function (e) {
             hideMsgs();
             var readBarcode = $("#codbarra").val().trim();
-            var estorna = $("#estorna").is(":checked");
             var jaLida = false;
             etiquetasToConf.forEach((value) => {
                if (value == readBarcode) {
@@ -141,14 +132,8 @@
             if (readBarcode != "" && !jaLida) {
                etiquetasToConf.push(readBarcode);
                var parm = new Object();
-               parm.CodigoBarras = readBarcode.trim();
-               parm.UsuarioId = vars.user;
-               parm.UsuarioLogin = vars.username;
-               parm.CargaId = vars.carga;
-               parm.ModeloEtiquetaId = vars.etiqueta;
-               parm.ImpressoraId = vars.imp;
-               parm.PedidoId = vars.pedido;
-               parm.Estornar = estorna ? "1" : "0";
+               parm.codigobarras = readBarcode.trim();
+               parm.CargaId = vars.CargaId;
                $.ajax({
                   url: url,
                   method: "POST",
@@ -158,9 +143,7 @@
                   beforeSend: function () { },
                })
                   .done(function (msg) {
-                     if (msg.MensagemErro == "") {
-                        msg.Mensagem = `${msg.ProdutoCodigo ? msg.ProdutoCodigo : " "} ${msg.ProdutoDescricao ? msg.ProdutoDescricao : " "} ${msg.RevestimentoId ? msg.RevestimentoId : ""} ${msg.RevestimentoDescricao ? msg.RevestimentoDescricao : ""}`;
-                        histLeitura.push(`<li style="color:#041A56;">Etiqueta:${msg.CodigoBarras ? msg.CodigoBarras : ' '} Produto:${msg.ProdutoCodigo ? msg.ProdutoCodigo : ' '} ${msg.Mensagem ? msg.Mensagem : ' '} </li>`);
+                     if (msg.MsgErro == "") {
                         etiquetaValida++;
                         qtdePalete++;
                         totalEtiquetas--;
@@ -169,11 +152,8 @@
                         $("#qtdePalete").text(qtdePalete);
                         $("#etiquetasValidas").text(etiquetaValida);
                      } else {
-                        verifyReturn(msg.Mensagem);
                         if (readBarcode != "")
-                           histLeitura.push(
-                              `<li style="color:red;">${readBarcode} - ${msg.MensagemErro}</li>`
-                           );
+                           histLeitura.push(`<li style="color:red;">${readBarcode} - ${msg.MensagemErro}</li>`);
                         etiquetaInvalida++;
                         $("#mensagemErroG").text(`${readBarcode} - ${msg.MensagemErro}`);
                         $("#mensagemErroG").show();
@@ -184,8 +164,8 @@
                      $("#historicoLeitura").html(histLeitura);
                   })
                   .fail(function (jqXHR, textStatus, msg) {
-                     $("#dangerText").text(msg.Mensagem);
-                     $("#responseDanger").show();
+                     $("#mensagemErroG").text('Erro ao realizar requisição: ' + msg + ' - Entre em contato com o suporte');
+                     $("#mensagemErroG").show();
                   });
             } else {
                $("#alertText").text("Favor, informar um código de etiqueta");

@@ -74,7 +74,6 @@
             vars[hash[0]] = hash[1];
         }
         vars;
-        console.log(vars.urlapi);
         var descCarga = vars.descricao;
         var totalEtiquetas = vars.totaletiqueta - vars.etiquetaconferida;
         var etiquetaValida = vars.etiquetaconferida;
@@ -128,8 +127,8 @@
                 if (readBarcode != "") {
                     var parm = new Object();
                     parm.UsuarioId = vars.user;
-                    parm.EmpresaId = vars.Empresa;
-                    parm.NFId = vars.NFId;
+                    parm.EmpresaId = vars.empresa;
+                    parm.NFId = vars.nfid;
                     parm.CodigoBarras = readBarcode.trim();
                     $.ajax({
                         url: url,
