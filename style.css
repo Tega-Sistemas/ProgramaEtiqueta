@@ -9,9 +9,8 @@ body {
 }
 body,
 input,
-button,
-textarea {
-  font: 600 18px Nunito, sans-serif;
+button {
+  font: 600 16px Nunito, sans-serif;
 }
 ul {
   margin: 4px;
@@ -129,21 +128,21 @@ h1 {
 }
 .form .card .contadores #etiquetasValidas {
   color: #1ba80e;
-  font-size: 22px;
+  font-size: 18px;
 }
 .form .card .contadores #etiquetasToConf {
   color: black;
-  font-size: 22px;
+  font-size: 18px;
 }
 .form .card .contadores #etiquetasTotalConf,
 #qtdePalete,
 #etiqeutasDuplicadas {
   color: #0000ff;
-  font-size: 22px;
+  font-size: 18px;
 }
 .form .card .contadores #etiquetasInvalidas {
   color: red;
-  font-size: 22px;
+  font-size: 18px;
 }
 .form .card button {
   margin-top: 10px;

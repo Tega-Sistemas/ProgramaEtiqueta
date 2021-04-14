@@ -4,6 +4,8 @@
 <head>
    <meta charset="UTF-8" />
    <link rel="stylesheet" href="./style.css" />
+   <link rel="preconnect" href="https://fonts.gstatic.com">
+   <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -80,6 +82,8 @@
       var codCarga = vars.carga;
       var etiquetaValida = vars.totconf;
       var totalEtiquetas = vars.totetiquetas;
+      var validaentestoque = vars.validarentrada;
+      console.log(validaentestoque);
       $("#etiquetasToConf").text(vars.totetiquetas);
       $("#etiquetasValidas").text(etiquetaValida);
       $("#codCarga").text(`${codCarga} ${decodeURI(vars.desccarga)}`);
@@ -142,13 +146,14 @@
                etiquetasToConf.push(readBarcode);
                var parm = new Object();
                parm.CodigoBarras = readBarcode.trim();
-               parm.UsuarioId = vars.user;
-               parm.UsuarioLogin = vars.username;
                parm.CargaId = vars.carga;
                parm.ModeloEtiquetaId = vars.etiqueta;
                parm.ImpressoraId = vars.imp;
                parm.PedidoId = vars.pedido;
                parm.Estornar = estorna ? "1" : "0";
+               parm.isConfEstoque = validaentestoque == 'true'
+               parm.UsuarioId = vars.user;
+               parm.UsuarioLogin = vars.username;
                $.ajax({
                   url: url,
                   method: "POST",
