@@ -175,6 +175,7 @@
                         $("#etiquetasValidas").text(etiquetaValida);
                      } else {
                         verifyReturn(msg.Mensagem);
+                        etiquetasToConf.pop(readBarcode);
                         if (readBarcode != "")
                            histLeitura.push(
                               `<li style="color:red;">${readBarcode} - ${msg.MensagemErro}</li>`
@@ -217,5 +218,4 @@
 
    </script>
 </body>
-
 </html>
