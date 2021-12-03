@@ -3,8 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="./style.css" />
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito&display=swap"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
@@ -69,7 +72,7 @@
         vars[hash[0]] = hash[1];
       }
       vars;
-      url = `${vars.urlApi}/rest/pprcEtiquetaEntEstoqueLoteNewRest`;
+      url = `${vars.urlApi}/rest/pprcSetEtiquetaConferenciaEstoque`;
       function verifyReturn(msg) {
         switch (msg) {
           case "Etiqueta Inválida":
@@ -121,18 +124,18 @@
               },
             })
               .done(function (msg) {
-                if (msg.Msg1 == "") {
-                  msg.Msg1 = `${msg.ProdutoCodigo} ${msg.ProdutoDescricao} ${msg.RevestimentoId} ${msg.RevestimentoDescricao}`;
+                if (msg.MensagemErro == "") {
+                  msg.Mensagem = `${msg.ProdutoCodigo} ${msg.ProdutoDescricao} ${msg.RevestimentoId} ${msg.RevestimentoDescricao}`;
                   histLeitura.push(
-                    `<li style="color:#041A56;">Lote:${msg.LoteProducaoId} Etiq:${msg.EtiquetaProducaoId} ${msg.Msg1} </li>`
+                    `<li style="color:#041A56;">${msg.Mensagem}</li>`
                   );
                   etiquetaValida++;
                   $("#etiquetasValidas").text(etiquetaValida);
                 } else {
-                  verifyReturn(msg.Msg1);
+                  verifyReturn(msg.MensagemErro);
                   if (readBarcode != "")
                     histLeitura.push(
-                      `<li style="color:red;">${readBarcode} - ${msg.Msg1}</li>`
+                      `<li style="color:red;">${readBarcode} - ${msg.MensagemErro}</li>`
                     );
                   etiquetaInvalida++;
                   $("#etiquetasInvalidas").text(etiquetaInvalida);
@@ -141,7 +144,7 @@
                 $("#historicoLeitura").html(histLeitura);
               })
               .fail(function (jqXHR, textStatus, msg) {
-                $("#dangerText").text(msg.Msg1);
+                $("#dangerText").text(msg.MensagemErro);
                 $("#responseDanger").show();
               });
           } else {
@@ -157,8 +160,6 @@
             $("#alertText").text("Processando, favor não fechar a página");
             $("#responseAlert").show();
           }
-          console.log(count);
-          console.log(histLeitura.length);
           if (readBarcode != null) {
             count++;
           }

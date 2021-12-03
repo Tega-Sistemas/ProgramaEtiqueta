@@ -1,36 +1,36 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  box-sizing: border-box
 }
 body {
   color: #000;
-  background: #fff;
+  background: #fff
 }
 body,
-input,
-button {
-  font: 600 16px Nunito, sans-serif;
+button,
+input {
+  font: 600 16px Nunito,sans-serif
 }
 ul {
   margin: 4px;
   align-items: flex-start;
-  text-align: start;
+  text-align: start
 }
 li {
   font-size: 14px;
-  list-style-position: inside;
+  list-style-position: inside
 }
 h1 {
-  color: rgb(255, 72, 72);
-  background-color: rgb(255, 168, 168);
+  color: #ff4848;
+  background-color: #ffa8a8;
   align-self: center;
-  border: 1px solid rgb(151, 7, 7);
+  border: 1px solid #970707;
   border-radius: 20px;
-  padding: 10px;
+  padding: 10px
 }
 .form.history {
-  margin-top: 15px;
+  margin-top: 15px
 }
 .form {
   width: 700px;
@@ -39,46 +39,46 @@ h1 {
   background: #fcfcfc;
   border: 1px solid #d3e2e5;
   border-radius: 20px;
-  padding: 34px;
+  padding: 34px
 }
 .form .card {
   justify-content: start;
   flex-direction: column;
-  display: flex;
+  display: flex
 }
 .form .card .rowCard {
   display: flex;
-  flex-direction: row;
+  flex-direction: row
 }
 .form .card .subcard {
   flex-direction: column;
   padding: 10px;
   display: flex;
   width: 350px;
-  height: 220px;
+  height: 220px
 }
 .form .card .subcard .checkbox_box {
-  margin-top: 5px;
+  margin-top: 5px
 }
 .form .card .subcard span {
-  font-size: 16px;
+  font-size: 16px
 }
 .form .card .rowCard .subcard .contadores {
   flex-direction: column;
   justify-content: start;
-  text-align: start;
+  text-align: start
 }
 .form .card .rowCard .subcard .cargaInfo {
-  font-weight: 700;
+  font-weight: 700
 }
 .form .card .rowCard .subcard .cargaInfo span {
-  color: #555555;
-  font-weight: bold;
+  color: #555;
+  font-weight: 700
 }
 .form .card .rowCard .subcard table {
   margin: 0;
   padding: 0;
-  background-color: #1ba80e;
+  background-color: #1ba80e
 }
 .zeraPateleBtn {
   background-color: #041a56;
@@ -86,24 +86,11 @@ h1 {
   color: #fff;
   margin-top: 10px;
   margin-right: 5px;
-  width: 45%;
+  width: 45%
 }
 .zeraPateleBtn:hover {
   background-color: #3955a1;
-  cursor: pointer;
-}
-#clearPage {
-  padding: 5px;
-  border-radius: 10px;
-  border: 1px #000 solid;
-  background: #ff3e30;
-  color: white;
-  font-size: 12px;
-  width: 45%;
-}
-#clearPage:hover {
-  background: #db6a62;
-  cursor: pointer;
+  cursor: pointer
 }
 .finalizaConfBtn {
   min-height: 30px;
@@ -113,87 +100,111 @@ h1 {
   background-color: orange;
   font-size: 14px;
   color: #fff;
-  align-items: flex-end;
+  align-items: flex-end
 }
 .row {
   margin: 10px;
-  flex-direction: row wrap;
+  flex-direction: row wrap
 }
 .form .card .contadores {
   font-size: 16px;
-  text-align: center;
+  text-align: center
 }
 .form .card .contadores span {
-  align-self: auto;
+  align-self: auto
 }
 .form .card .contadores #etiquetasValidas {
   color: #1ba80e;
-  font-size: 18px;
+  font-size: 18px
 }
 .form .card .contadores #etiquetasToConf {
-  color: black;
-  font-size: 18px;
-}
-.form .card .contadores #etiquetasTotalConf,
-#qtdePalete,
-#etiqeutasDuplicadas {
-  color: #0000ff;
-  font-size: 18px;
+  color: #000;
+  font-size: 18px
 }
 .form .card .contadores #etiquetasInvalidas {
   color: red;
-  font-size: 18px;
+  font-size: 18px
 }
 .form .card button {
-  margin-top: 10px;
+  margin-top: 10px
 }
 .form .card button:hover {
-  background: rgb(61, 84, 133);
-  cursor: pointer;
+  background: #3d5485;
+  cursor: pointer
 }
-
 .sendButton:hover {
-  background: rgb(145, 145, 145);
-  cursor: pointer;
+  background: #919191;
+  cursor: pointer
 }
-
 .form .card .responseList {
   text-align: center;
   margin-top: 20px;
   justify-content: center;
-  display: flex;
+  display: flex
 }
 .form .card .responseList .responseCard {
-  background: #ffffff;
-  border-radius: 20px;
+  background: #fff;
+  border-radius: 20px
 }
 .form .card .responseList .danger {
   color: #4a4a4a;
   background-color: #ffbaba;
-  border: 1px solid #9c0000;
+  border: 1px solid #9c0000
 }
 .form .card .responseList .success {
   color: #4a4a4a;
   background-color: #b3ffa6;
-  border: 1px solid #1ba80e;
+  border: 1px solid #1ba80e
 }
 .form .card .responseList .alert {
   color: #4a4a4a;
   background-color: #feffb5;
-  border: 1px solid #999c00;
+  border: 1px solid #999c00
 }
 .form .card .responseList p {
-  margin: 2px 10px 2px 10px;
+  margin: 2px 10px 2px 10px
 }
-.form .card input[type="text"] {
+.form .card input[type=text] {
   border-radius: 10px;
   border: 1px #000 solid;
   min-height: 30px;
-  padding: 5px;
+  padding: 5px
 }
 .form .card button {
   min-height: 30px;
   padding: 5px;
   border-radius: 10px;
+  border: 1px #000 solid
+}
+#clearPage {
+  padding: 5px;
+  border-radius: 10px;
   border: 1px #000 solid;
+  background: #ff3e30;
+  color: #fff;
+  font-size: 12px;
+  width: 45%
+}
+#clearPage:hover {
+  background: #db6a62;
+  cursor: pointer
+}
+#trocarMotivo {
+  padding: 5px;
+  border-radius: 10px;
+  border: 1px #000 solid;
+  background: orange;
+  color: #fff;
+  font-size: 12px;
+  width: 45%
+}
+#trocarMotivo:hover {
+  background: rgba(255,166,0,.781);
+  cursor: pointer
+}
+#etiqeutasDuplicadas,
+#qtdePalete,
+.form .card .contadores #etiquetasTotalConf {
+  color: #00f;
+  font-size: 18px
 }

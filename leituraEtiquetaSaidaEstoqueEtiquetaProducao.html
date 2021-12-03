@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8" />
+   <link rel="stylesheet" href="./style.css" />
+   <link rel="preconnect" href="https://fonts.gstatic.com">
+   <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+</head>
+
+<body>
+   <div class="page">
+      <div class="form">
+         <div class="card">
+            <h1 id="mensagemErroG"></h1>
+            <div class="rowCard">
+               <div class="subcard">
+                  <label>Motivo Baixa</label>
+                  <input type="text" name="motivoparada" id="motivoparada" onfocusout="setaMotivoBaixa()" />
+                  <label>Código de Barra</label>
+                  <input type="text" name="codbarra" id="codbarra" onfocusout="lostInputFocus()" />
+                  <button id="button" class="sendButton">Confirmar</button>
+               </div>
+               <div class="subcard">
+                  <div class="contadores">
+                     <p>Etiquetas Conferidas <span id="etiquetasValidas">0</span></p>
+                     <p>Etiquetas inválidas <span id="etiquetasInvalidas">0</span></p>
+                  </div>
+                  <button id="trocarMotivo">Trocar Motivo</button>
+                  <button id="clearPage">Limpar página</button>
+               </div>
+            </div>
+         </div>
+      </div>
+
+   </div>
+   <div class="form history">
+      <h3>Histórico de leitura de etiquetas</h3>
+      <div class="card">
+         <ul id="historicoLeitura"></ul>
+      </div>
+   </div>
+   </div>
+   <script type="text/javascript" src="./jquery.min.js"></script>
+   <script>
+      $("#codbarra").focus();
+      $("#mensagemErroG").hide();
+      var count = 0;
+      var etiquetaValida = 0;
+      var etiquetaInvalida = 0;
+      var MotivoBaixa = '';
+      var vars = [], hash;
+      var histLeitura = [];
+      var hashes = window.location.href.slice(window.location.href.indexOf("?") + 1).split("&");
+
+      for (var i = 0; i < hashes.length; i++) {
+         hash = hashes[i].split("=");
+         vars.push(hash[0]);
+         vars[hash[0]] = hash[1];
+      } vars;
+
+      var user = vars.user;
+      var url = `${vars.urlApi}/rest/pprcSaidaEstoqueEtiquetaProducaoRest`;
+
+      function setaMotivoBaixa() {
+         if ($("#motivoparada").val() != '') {
+            MotivoBaixa = $("#motivoparada").val();
+            console.log(MotivoBaixa);
+            $("#motivoparada").prop('disabled', true);
+            var etiquetaValida = 0;
+            var etiquetaInvalida = 0;
+            $("#etiquetasValidas").text(etiquetaValida);
+            $("#etiquetasInvalidas").text(etiquetaInvalida);
+         }
+      }
+
+      function lostInputFocus() {
+         var validLostInput = $("#codbarra").val();
+         if (validLostInput != "" && validLostInput != null) {
+            $("#button").click();
+            $("#codbarra").focus();
+         }
+      }
+
+      $(document).ready(function () {
+
+         $("#clearPage").click(function () {
+            document.location.reload(true);
+         });
+
+         $("#trocarMotivo").click(function () {
+            console.log('Trocando motivo baixa');
+            MotivoBaixa = '';
+            $("#motivoparada").focus();
+            $("#motivoparada").prop('disabled', false);
+         });
+
+         $(document).keypress(function (e) {
+            if (e.which == 13) {
+               $("#button").focus();
+            }
+         });
+         $("button").click(function (e) {
+            var readBarcode = $("#codbarra").val().trim();
+            var estorna = $("#estorna").is(":checked");
+            if (readBarcode != "" && MotivoBaixa != "") {
+               var parm = new Object();
+               parm.codigobarras = readBarcode.trim();
+               parm.obs120 = MotivoBaixa.trim();
+               parm.UsuarioId = user;
+               $.ajax({
+                  url: url,
+                  method: "POST",
+                  dataType: "json",
+                  contentType: "application/json;charset=UTF-8",
+                  data: JSON.stringify(parm)
+               })
+                  .done(function (msg) {
+                     if (msg.MensagemErro == "") {
+                        histLeitura.push(`<li style="color:#041A56;">${msg.Mensagem}</li>`);
+                        etiquetaValida++;
+                        $("#mensagemErroG").hide();
+                        $("#etiquetasValidas").text(etiquetaValida);
+                     } else {
+                        histLeitura.push(`<li style="color:red;">${readBarcode} - ${msg.MensagemErro}</li>`);
+                        etiquetaInvalida++;
+                        $("#etiquetasInvalidas").text(etiquetaInvalida);
+                        $("#mensagemErroG").text(`${readBarcode} - ${msg.MensagemErro}`);
+                        $("#mensagemErroG").show();
+                     }
+                     $("#codbarra").focus();
+                     $("#historicoLeitura").html(histLeitura);
+                  })
+                  .fail(function (jqXHR, textStatus, msg) {
+                     $("#mensagemErroG").text(msg.Mensagem);
+                     $("#mensagemErroG").show();
+                  });
+            } else {
+               $("#alertText").text("Favor, informar um código de etiqueta");
+               $("#responseAlert").show();
+            }
+            $("#codbarra").val("");
+            $("#codbarra").focus();
+            $("#historicoLeitura").html(histLeitura);
+            if (count >= histLeitura.length) {
+               $("#responseAlert").hide();
+            }
+            if (readBarcode != null) {
+               count++;
+            }
+         });
+      });
+
+   </script>
+</body>
+
+</html>

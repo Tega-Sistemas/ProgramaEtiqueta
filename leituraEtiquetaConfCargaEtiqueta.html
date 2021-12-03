@@ -90,23 +90,12 @@
       $("#nroPedido").text(vars.pedido);
       $("#nomeImp").text(decodeURI(vars.nomeimp));
       $("#descEtiqueta").text(decodeURI(vars.descetiq));
-      url = `${vars.urlApi}/rest/pprcleretiquetacargacomimpressaorest`;
+      //url = `${vars.urlApi}/rest/pprcleretiquetacargacomimpressaorest`;
+      url = `${vars.urlApi}/rest/pprcSetEtiquetaConferencia`;
       function hideMsgs() {
          $("#responseDanger").hide();
          $("#responseSuccess").hide();
          $("#responseAlert").hide();
-      }
-      function verifyReturn(msg) {
-         switch (msg) {
-            case "Etiqueta Inválida":
-               $("#responseDanger").show();
-               $("#dangerText").text("Etiqueta inválida, favor verificar os dados");
-               break;
-            case "Entrada Pela Etiqueta já Efetudada":
-               $("#responseDanger").show();
-               $("#dangerText").text(msg);
-               break;
-         }
       }
       function lostInputFocus() {
          var validLostInput = $("#codbarra").val();
@@ -174,11 +163,10 @@
                         $("#qtdePalete").text(qtdePalete);
                         $("#etiquetasValidas").text(etiquetaValida);
                      } else {
-                        verifyReturn(msg.Mensagem);
-                        etiquetasToConf.pop(readBarcode);
+                        etiquetasToConf.splice(etiquetasToConf.indexOf(readBarcode), 1);
                         if (readBarcode != "")
                            histLeitura.push(
-                              `<li style="color:red;">${readBarcode} - ${msg.MensagemErro}</li>`
+                              `<li style="color:red;">${readBarcode} - ${msg.ProdutoCodigo ? msg.ProdutoCodigo : " "} ${msg.MensagemErro}</li>`
                            );
                         etiquetaInvalida++;
                         $("#mensagemErroG").text(`${readBarcode} - ${msg.MensagemErro}`);
@@ -211,11 +199,12 @@
                $("#responseAlert").hide();
             }
             if (readBarcode != null) {
-               count++;
+    count++;
             }
          });
       });
 
    </script>
 </body>
+
 </html>
