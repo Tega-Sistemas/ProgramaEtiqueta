@@ -3,16 +3,17 @@
 
 <head>
    <meta charset="UTF-8" />
-   <link rel="stylesheet" href="./style.css" />
+   <link rel="stylesheet" href="./src/style.css" />
    <link rel="preconnect" href="https://fonts.gstatic.com">
    <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
 </head>
 
-<body>
+<body id="loadingindicator">
    <div class="page">
       <div class="form">
          <div class="card">
             <h1 id="mensagemErroG"></h1>
+            <h1 id="mensagemSuccessG" class="mensagemSuccessG"></h1>
             <div class="rowCard">
                <div class="subcard">
                   <p class="cargaInfo">Carga:<span id="codCarga"></span></p>
@@ -31,8 +32,11 @@
                      <p>Lidas Duplicadas <span id="etiqeutasDuplicadas">0</span></p>
                      <p>Qtde. Palete <span id="qtdePalete">0</span></p>
                   </div>
-                  <div class="btn-group" style="width:100%"><button id="btnZeraPalete" class="zeraPateleBtn">Zerar Qtde.
-                        Palete</button><button id="clearPage">Limpar página</button></div>
+                  <div class="btn-group" style="width:100%">
+                     <button id="btnZeraPalete" class="zeraPateleBtn">Zerar Qtde. Palete</button>
+                     <button id="clearPage">Limpar página</button>
+                     <button id="finalizaConferencia">Finalizar Conferênica</button>
+                  </div>
                </div>
             </div>
          </div>
@@ -55,10 +59,14 @@
       </div>
    </div>
    </div>
-   <script type="text/javascript" src="./jquery.min.js"></script>
+
+   <script type="text/javascript" src="./src/jquery.min.js"></script>
+   <script src="./src/loadingover/dist/loadingoverlay.min.js"></script>
+
    <script>
       $("#codbarra").focus();
       $("#mensagemErroG").hide();
+      $("#mensagemSuccessG").hide();
       hideMsgs();
       var count = 0;
       var etiquetaValida = 0;
@@ -90,8 +98,10 @@
       $("#nroPedido").text(vars.pedido);
       $("#nomeImp").text(decodeURI(vars.nomeimp));
       $("#descEtiqueta").text(decodeURI(vars.descetiq));
-      //url = `${vars.urlApi}/rest/pprcleretiquetacargacomimpressaorest`;
+
       url = `${vars.urlApi}/rest/pprcSetEtiquetaConferencia`;
+      urlFinalizacao = `${vars.urlApi}/rest/pprcFinalizaConferenciaRest`;
+
       function hideMsgs() {
          $("#responseDanger").hide();
          $("#responseSuccess").hide();
@@ -104,6 +114,7 @@
             $("#codbarra").focus();
          }
       }
+
       $("#estorna").click(() => {
          $("#codbarra").focus();
       });
@@ -119,6 +130,9 @@
          $("#btnZeraPalete").click(() => {
             qtdePalete = 0;
             $("#qtdePalete").text(qtdePalete);
+         });
+         $("#finalizaConferencia").click(() => {
+            finalizaConferencia();
          });
          $("button").click(function (e) {
             hideMsgs();
@@ -157,11 +171,17 @@
                         histLeitura.push(`<li style="color:#041A56;">Etiqueta:${msg.CodigoBarras ? msg.CodigoBarras : ' '} Produto:${msg.ProdutoCodigo ? msg.ProdutoCodigo : ' '} ${msg.Mensagem ? msg.Mensagem : ' '} </li>`);
                         etiquetaValida++;
                         qtdePalete++;
-                        totalEtiquetas--;
+                        totalEtiquetas = totalEtiquetas - 1;
                         $("#etiquetasToConf").text(totalEtiquetas);
                         $("#mensagemErroG").hide();
+                        $("#mensagemSuccessG").hide();
                         $("#qtdePalete").text(qtdePalete);
                         $("#etiquetasValidas").text(etiquetaValida);
+
+                        //Finaliza a conferência da carga no GNI
+                        if (totalEtiquetas <= 0) {
+                           finalizaConferencia();
+                        }
                      } else {
                         etiquetasToConf.splice(etiquetasToConf.indexOf(readBarcode), 1);
                         if (readBarcode != "")
@@ -199,11 +219,48 @@
                $("#responseAlert").hide();
             }
             if (readBarcode != null) {
-    count++;
+               count++;
             }
          });
-      });
 
+         function finalizaConferencia() {
+            $.LoadingOverlay("show", {
+               fontawesome: "fas fa-box-check",
+               fontawesomeColor: "#273A6E",
+            });
+            $("#loadingindicator").LoadingOverlay("show");
+            console.log('FINALIZANDO');
+            var parmFinalizacao = new Object();
+            parmFinalizacao.CargaId = vars.carga;
+            parmFinalizacao.NomeConferente = vars.username;
+            console.log(urlFinalizacao);
+            $.ajax({
+               url: urlFinalizacao,
+               method: "POST",
+               dataType: "json",
+               contentType: "application/json;charset=UTF-8",
+               data: JSON.stringify(parmFinalizacao),
+               beforeSend: function () { },
+            })
+               .done(function (msg) {
+                  if (msg.isError) {
+                     $("#mensagemErroG").text(`Erro: ${msg.message}`);
+                     $("#mensagemErroG").show();
+                  } else {
+                     $("#mensagemSuccessG").text(`Conferência finalizada com sucesso!`);
+                     $("#mensagemSuccessG").show();
+                  }
+               })
+               .fail(function (jqXHR, textStatus, msg) {
+                  $("#mensagemErroG").text(`Ocorreu um erro ao finalizar a conferência (${msg})`);
+                  $("#mensagemErroG").show();
+               });
+
+               $.LoadingOverlay("hide");
+               $("#loadingindicator").LoadingOverlay("hide");
+         }
+
+      });
    </script>
 </body>
 

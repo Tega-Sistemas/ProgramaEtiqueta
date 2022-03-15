@@ -29,6 +29,16 @@ h1 {
   border-radius: 20px;
   padding: 10px
 }
+
+.mensagemSuccessG {
+   color: #2da822;
+   background-color: #87faa0;
+   align-self: center;
+   border: 1px solid #035d1a;
+   border-radius: 20px;
+   padding: 10px
+ }
+
 .form.history {
   margin-top: 15px
 }
@@ -189,6 +199,20 @@ h1 {
   background: #db6a62;
   cursor: pointer
 }
+#finalizaConferencia {
+   padding: 5px;
+   border-radius: 10px;
+   border: 1px #000 solid;
+   background: #09a72b;
+   color: #fff;
+   font-size: 12px;
+   width: 45%
+ }
+ #finalizaConferencia:hover {
+   background: #6adf7d;
+   cursor: pointer
+ }
+
 #trocarMotivo {
   padding: 5px;
   border-radius: 10px;
