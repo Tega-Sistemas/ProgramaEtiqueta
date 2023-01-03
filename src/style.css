@@ -42,6 +42,7 @@ h1 {
 .form.history {
   margin-top: 15px
 }
+
 .form {
   width: 700px;
   margin: 0 auto;
@@ -51,6 +52,7 @@ h1 {
   border-radius: 20px;
   padding: 34px
 }
+
 .form .card {
   justify-content: start;
   flex-direction: column;
@@ -117,7 +119,7 @@ h1 {
   flex-direction: row wrap
 }
 .form .card .contadores {
-  font-size: 16px;
+  font-size: 20px;
   text-align: center
 }
 .form .card .contadores span {
@@ -174,7 +176,8 @@ h1 {
 .form .card .responseList p {
   margin: 2px 10px 2px 10px
 }
-.form .card input[type=text] {
+
+input[type=text] {
   border-radius: 10px;
   border: 1px #000 solid;
   min-height: 30px;

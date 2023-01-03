@@ -8,29 +8,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
 </head>
 
-<body>
+<body style="transform: scale(1.0);">
     <div class="page">
-        <div class="form">
+        <div class="form" style="margin-top:40pt; width: 600px;">
             <div class="card">
                 <h1 id="mensagemErroG"></h1>
                 <div class="rowCard">
                     <div class="subcard">
-                        <p class="cargaInfo">Carga:<span id="codCarga"></span></p>
-                        <p class="cargaInfo">Nº Entrega:<span id="nroEntrega"></span></p><label>Código de Barra</label>
-                        </p>
+                        <p class="cargaInfo">EQUIPAMENTO:<span id="EquipamentoDescricao"></span></p>
+                        <p class="cargaInfo">SETOR:<span id="SetorDescricao"></span></p>
+                        <label>Código de Barra</label>
                         <input type="text" name="codbarra" id="codbarra" onfocusout="lostInputFocus()" />
                         <button id="button" class="sendButton">Confirmar</button>
                     </div>
                     <div class="subcard">
                         <div class="contadores">
-                            <p>Conferir <span id="etiquetasToConf">0</span></p>
-                            <p>Etiquetas Conferidas <span id="etiquetasValidas">0</span></p>
-                            <p>Etiquetas inválidas <span id="etiquetasInvalidas">0</span></p>
-                            <p>Lidas Duplicadas <span id="etiqeutasDuplicadas">0</span></p>
-                            <p>Qtde. Palete <span id="qtdePalete">0</span></p>
+                            <p>Etiquetas conferidas: <span id="etiquetasValidas">0</span></p>
+                            <p>Etiquetas inválidas: <span id="etiquetasInvalidas">0</span></p>
+                            <p>Leituras duplicadas: <span id="etiqeutasDuplicadas">0</span></p>
                         </div>
                         <div class="btn-group" style="width:100%">
-                            <button id="btnZeraPalete" class="zeraPateleBtn">Zerar Qtde. Palete</button>
                             <button id="clearPage">Limpar página</button>
                         </div>
                     </div>
@@ -47,7 +44,7 @@
             </div>
         </div>
     </div>
-    <div class="form history">
+    <div class="form history" style="width: 600px;">
         <h3>Histórico de leitura de etiqueta</h3>
         <div class="card">
             <ul id="historicoLeitura"></ul>
@@ -63,7 +60,6 @@
         var etiquetaValida = 0;
         var etiquetaInvalida = 0;
         var etiquetaDuplicada = 0;
-        var qtdePalete = 0;
         var url;
         var histLeitura = [];
         var etiquetasToConf = [];
@@ -77,14 +73,13 @@
             vars[hash[0]] = hash[1];
         }
         vars;
-        var descCarga = vars.desccarga.replace(/%20/g, " ");
-        var totalEtiquetas = vars.totetiquetas;
-        var etiquetaValida = vars.totconf;
-        $("#etiquetasToConf").text(vars.totetiquetas);
+        var descCarga = vars.descricao;
+        var totalEtiquetas = vars.totaletiqueta - vars.etiquetaconferida;
         $("#etiquetasValidas").text(etiquetaValida);
-        $("#codCarga").text(`${vars.carga} ${decodeURI(descCarga)}`);
+        $("#SetorDescricao").text(` ${decodeURI(vars.setordescricao)}`);
+        $("#EquipamentoDescricao").text(` ${decodeURI(vars.equipamentodescricao)}`);
         $("#nroEntrega").text(vars.numentrega);
-        url = `${vars.urlApi}/rest/pprcleretiquetacargarest`;
+        url = `${vars.urlapi}rest/pprcConferenciaEtiquetaFaseProd`;
         function hideMsgs() {
             $("#responseDanger").hide();
             $("#responseSuccess").hide();
@@ -110,6 +105,7 @@
             }
         }
         $(document).ready(function () {
+            $("#codbarra").focus();
             $("#clearPage").click(function () {
                 document.location.reload(true);
             });
@@ -118,19 +114,16 @@
                     $("#button").focus();
                 }
             });
-            $("#btnZeraPalete").click(() => {
-                console.log("zera");
-                qtdePalete = 0;
-                $("#qtdePalete").text(qtdePalete);
-            });
             $("button").click(function (e) {
                 hideMsgs();
                 var readBarcode = $("#codbarra").val();
                 if (readBarcode != "") {
                     var parm = new Object();
+                    parm.SetorId = vars.setorid;
+                    parm.LicencaId = vars.licencaid;
+                    parm.EquipamentoId = vars.equipamentoid;
+                    parm.UsuarioLogin = vars.usuariologin;
                     parm.CodigoBarras = readBarcode.trim();
-                    parm.EntregaNroEntrega = vars.numentrega;
-                    parm.CargaId = vars.carga;
                     $.ajax({
                         url: url,
                         method: "POST",
@@ -158,15 +151,13 @@
                                     );
                                     valReread = false;
                                 } else {
-                                    msg.Mensagem = `${readBarcode} - ${msg.ProdutoDescricao} ${msg.RevestimentoDescricao}`;
+                                    msg.Mensagem = `${msg.Mensagem}`;
                                     $("#mensagemErroG").hide();
                                     histLeitura.push(
                                         `<li style="color:#041A56;">${msg.Mensagem} </li>`
                                     );
                                     etiquetaValida++;
-                                    qtdePalete++;
                                     /* * Diminui a quantidade total de etiquetas conforme a carga é lida */
-                                    $("#qtdePalete").text(qtdePalete);
                                     totalEtiquetas--;
                                     $("#etiquetasToConf").text(totalEtiquetas);
                                     $("#etiquetasValidas").text(etiquetaValida);
@@ -206,12 +197,9 @@
                     $("#responseAlert").show();
                 }
                 if (readBarcode != null) {
-                    count++;
+                    count++; ''
                 }
             });
-        });
-        $(window).load(function () {
-            $("#codbarra").focus();
         });
     </script>
 </body>

@@ -99,8 +99,8 @@
       $("#nomeImp").text(decodeURI(vars.nomeimp));
       $("#descEtiqueta").text(decodeURI(vars.descetiq));
 
-      url = `${vars.urlApi}/rest/pprcSetEtiquetaConferencia`;
-      urlFinalizacao = `${vars.urlApi}/rest/pprcFinalizaConferenciaRest`;
+      url = `${vars.urlApi}rest/pprcSetEtiquetaConferencia`;
+      urlFinalizacao = `${vars.urlApi}rest/pprcFinalizaConferenciaRest`;
 
       function hideMsgs() {
          $("#responseDanger").hide();
@@ -168,7 +168,7 @@
                   .done(function (msg) {
                      if (msg.MensagemErro == "") {
                         msg.Mensagem = `${msg.ProdutoCodigo ? msg.ProdutoCodigo : " "} ${msg.ProdutoDescricao ? msg.ProdutoDescricao : " "} ${msg.RevestimentoId ? msg.RevestimentoId : ""} ${msg.RevestimentoDescricao ? msg.RevestimentoDescricao : ""}`;
-                        histLeitura.push(`<li style="color:#041A56;">Etiqueta:${msg.CodigoBarras ? msg.CodigoBarras : ' '} Produto:${msg.ProdutoCodigo ? msg.ProdutoCodigo : ' '} ${msg.Mensagem ? msg.Mensagem : ' '} </li>`);
+                        histLeitura.push(`<li style="color:#041A56;">Etiqueta:${msg.EtiquetaProducaoId ? msg.EtiquetaProducaoId : ' '} Produto:${msg.ProdutoCodigo ? msg.ProdutoCodigo : ' '} ${msg.Mensagem ? msg.Mensagem : ' '} </li>`);
                         etiquetaValida++;
                         qtdePalete++;
                         totalEtiquetas = totalEtiquetas - 1;
@@ -256,8 +256,8 @@
                   $("#mensagemErroG").show();
                });
 
-               $.LoadingOverlay("hide");
-               $("#loadingindicator").LoadingOverlay("hide");
+            $.LoadingOverlay("hide");
+            $("#loadingindicator").LoadingOverlay("hide");
          }
 
       });
