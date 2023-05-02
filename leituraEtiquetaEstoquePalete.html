@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="./src/style.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="page">
+    <div class="form">
+      <div class="card">
+        <p class="cargaInfo">Nro. Lote:<span id="nroLote"></span></p>
+        <label>Código Barras</label>
+        <input type="text" name="codbarra" id="codbarra" onfocusout="lostInputFocus()" />
+        <button id="button">Confirmar</button>
+
+        <div class="row">
+          <div class="contadores">
+            <span class="SpanDescription">Etiquetas válidas</span>
+            <span id="etiquetasValidas">0</span>
+            <span class="SpanDescription">Etiquetas inválidas</span>
+            <span id="etiquetasInvalidas">0</span>
+            <span class="SpanDescription">Nro. palete</span>
+            <span id="addPalete">0</span>
+          </div>
+        </div>
+
+        <div class="responseList">
+          <div id="responseDanger" class="responseCard danger">
+            <p id="dangerText"></p>
+          </div>
+          <div id="responseAlert" class="responseCard alert">
+            <p id="alertText"></p>
+          </div>
+          <p id="process"></p>
+        </div>
+
+        <div class="row">
+          <div class="contadores">
+            <button id="clearPage">Limpar página</button>
+            <button id="trocarPalete">Trocar palete</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="form history">
+      <h3>Histórico de leitura de etiqueta</h3>
+      <div class="card">
+        <ul id="historicoLeitura"></ul>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="./src/jquery.min.js"></script>
+  <script type="text/javascript" src="./src/services/leituraEtiquetaEstoquePalete.js"></script>
+</body>
+
+</html>

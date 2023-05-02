@@ -15,6 +15,8 @@
             <h1 id="mensagemErroG"></h1>
             <div class="rowCard">
                <div class="subcard">
+                  <span class="cargaInfo" id="infoLocalEstoque">Local Estoque</span>
+                  <span id="LocalEstoque" class="locEstoqueInfo"></span>
                   <label>Motivo Baixa</label>
                   <input type="text" name="motivoparada" id="motivoparada" onfocusout="setaMotivoBaixa()" />
                   <label>Código de Barra</label>
@@ -59,13 +61,20 @@
          vars[hash[0]] = hash[1];
       } vars;
 
-      var user = vars.user;
       var url = `${vars.urlApi}/rest/pprcSaidaEstoqueEtiquetaProducaoRest`;
+      var user = vars.user;
+      var pLocalEstoqueId = vars.localEstoque;
+      var localEstoqueDesc = vars.localDesc === '' ? `LOCAL DE ETSTOQUE ${pLocalEstoqueId}` : decodeURI(vars.localDesc);
 
+      if (pLocalEstoqueId != 0) {
+         $("#infoLocalEstoque").show();
+         $("#LocalEstoque").text(` ${pLocalEstoqueId} ${localEstoqueDesc}`);
+      } else {
+         $("#infoLocalEstoque").hide();
+      }
       function setaMotivoBaixa() {
          if ($("#motivoparada").val() != '') {
             MotivoBaixa = $("#motivoparada").val();
-            console.log(MotivoBaixa);
             $("#motivoparada").prop('disabled', true);
             var etiquetaValida = 0;
             var etiquetaInvalida = 0;
@@ -89,7 +98,6 @@
          });
 
          $("#trocarMotivo").click(function () {
-            console.log('Trocando motivo baixa');
             MotivoBaixa = '';
             $("#motivoparada").focus();
             $("#motivoparada").prop('disabled', false);
@@ -100,14 +108,18 @@
                $("#button").focus();
             }
          });
+
          $("button").click(function (e) {
             var readBarcode = $("#codbarra").val().trim();
             var estorna = $("#estorna").is(":checked");
             if (readBarcode != "" && MotivoBaixa != "") {
                var parm = new Object();
+
                parm.codigobarras = readBarcode.trim();
                parm.obs120 = MotivoBaixa.trim();
                parm.UsuarioId = user;
+               parm.pLocalEstoqueId = pLocalEstoqueId;
+
                $.ajax({
                   url: url,
                   method: "POST",

@@ -2,266 +2,311 @@
 <html lang="en">
 
 <head>
-   <meta charset="UTF-8" />
-   <link rel="stylesheet" href="./src/style.css" />
-   <link rel="preconnect" href="https://fonts.gstatic.com">
-   <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="./src/style.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
 </head>
 
 <body id="loadingindicator">
-   <div class="page">
-      <div class="form">
-         <div class="card">
-            <h1 id="mensagemErroG"></h1>
-            <h1 id="mensagemSuccessG" class="mensagemSuccessG"></h1>
-            <div class="rowCard">
-               <div class="subcard">
-                  <p class="cargaInfo">Carga:<span id="codCarga"></span></p>
-                  <p class="cargaInfo">Nº Pedido:<span id="nroPedido"></span></p>
-                  <p class="checkbox_box"><input type="checkbox" id="estorna" class="checkBox"
-                        name="estorna"><span>Estorna
-                        etiqueta?</span></p><label>Código de Barra</label><input type="text" name="codbarra"
-                     id="codbarra" onfocusout="lostInputFocus()" /><button id="button"
-                     class="sendButton">Confirmar</button>
-               </div>
-               <div class="subcard">
-                  <div class="contadores">
-                     <p>Conferir <span id="etiquetasToConf">0</span></p>
-                     <p>Etiquetas Conferidas <span id="etiquetasValidas">0</span></p>
-                     <p>Etiquetas inválidas <span id="etiquetasInvalidas">0</span></p>
-                     <p>Lidas Duplicadas <span id="etiqeutasDuplicadas">0</span></p>
-                     <p>Qtde. Palete <span id="qtdePalete">0</span></p>
-                  </div>
-                  <div class="btn-group" style="width:100%">
-                     <button id="btnZeraPalete" class="zeraPateleBtn">Zerar Qtde. Palete</button>
-                     <button id="clearPage">Limpar página</button>
-                     <button id="finalizaConferencia">Finalizar Conferênica</button>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <div class="responseList">
-            <div id="responseDanger" class="responseCard danger">
-               <p id="dangerText"></p>
-            </div>
-            <div id="responseAlert" class="responseCard alert">
-               <p id="alertText"></p>
-            </div>
-            <p><span>Impressora:<span style="color:brown;" id="nomeImp"></span></span><span>Etiqueta:<span
-                     style="color:brown;" id="descEtiqueta"></span></span></p>
-         </div>
-      </div>
-   </div>
-   <div class="form history">
-      <h3>Histórico de leitura de etiqueta</h3>
+  <div class="page">
+    <div class="form">
       <div class="card">
-         <ul id="historicoLeitura"></ul>
+        <h1 id="mensagemErroG"></h1>
+        <h1 id="mensagemSuccessG" class="mensagemSuccessG"></h1>
+        <div class="rowCard">
+          <div class="subcard">
+            <p class="cargaInfo">Carga:<span id="codCarga"></span></p>
+            <p class="cargaInfo">Nº Pedido:<span id="nroPedido"></span></p>
+            <p class="checkbox_box"><input type="checkbox" id="estorna" class="checkBox" name="estorna"><span>Estorna
+                etiqueta?</span></p><label>Código de Barra</label><input type="text" name="codbarra" id="codbarra" onfocusout="lostInputFocus()" /><button id="button" class="sendButton">Confirmar</button>
+          </div>
+          <div class="subcard">
+            <div class="contadores">
+              <p>Conferir <span id="etiquetasToConf">0</span></p>
+              <p>Etiquetas Conferidas <span id="etiquetasValidas">0</span></p>
+              <p>Etiquetas inválidas <span id="etiquetasInvalidas">0</span></p>
+              <p>Lidas Duplicadas <span id="etiqeutasDuplicadas">0</span></p>
+              <p>Qtde. Palete <span id="qtdePalete">0</span></p>
+            </div>
+            <div class="btn-group" style="width:100%">
+              <button id="btnZeraPalete" class="zeraPateleBtn">Zerar Qtde. Palete</button>
+              <button id="clearPage">Limpar página</button>
+              <button id="finalizaConferencia">Finalizar Conferênica</button>
+            </div>
+          </div>
+        </div>
       </div>
-   </div>
-   </div>
+      <div class="responseList">
+        <div id="responseDanger" class="responseCard danger">
+          <p id="dangerText"></p>
+        </div>
+        <div id="responseAlert" class="responseCard alert">
+          <p id="alertText"></p>
+        </div>
+        <p><span>Impressora:<span style="color:brown;" id="nomeImp"></span></span><span>Etiqueta:<span style="color:brown;" id="descEtiqueta"></span></span></p>
+      </div>
+    </div>
+  </div>
+  <div class="form history">
+    <h3>Histórico de leitura de etiqueta</h3>
+    <div class="card">
+      <ul id="historicoLeitura"></ul>
+    </div>
+  </div>
+  </div>
 
-   <script type="text/javascript" src="./src/jquery.min.js"></script>
-   <script src="./src/loadingover/dist/loadingoverlay.min.js"></script>
+  <script type="text/javascript" src="./src/jquery.min.js"></script>
+  <script src="./src/loadingover/dist/loadingoverlay.min.js"></script>
 
-   <script>
+  <script>
+    $("#codbarra").focus();
+    $("#mensagemErroG").hide();
+    $("#mensagemSuccessG").hide();
+    hideMsgs();
+    var count = 0;
+    var etiquetaValida = 0;
+    var etiquetaInvalida = 0;
+    var etiquetaDuplicada = 0;
+    var qtdePalete = 0;
+    var etqConferidas = 0;
+    var url;
+    var histLeitura = [];
+    var etiquetasToConf = [];
+    var vars = [],
+      hash;
+    var hashes = window.location.href
+      .slice(window.location.href.indexOf("?") + 1)
+      .split("&");
+    for (var i = 0; i < hashes.length; i++) {
+      hash = hashes[i].split("=");
+      vars.push(hash[0]);
+      vars[hash[0]] = hash[1];
+    }
+    vars;
+
+    var codCarga = vars.carga;
+    var etiquetaValida = vars.totconf;
+    var totalEtiquetas = vars.totetiquetas;
+    var validaentestoque = vars.validarentrada;
+    var tatalPedidos = vars.totaletqpedido;
+    var CountOrder = 0;
+
+    $("#etiquetasToConf").text(vars.totetiquetas);
+    $("#etiquetasValidas").text(etiquetaValida);
+    $("#codCarga").text(`${codCarga} ${decodeURI(vars.desccarga)}`);
+    $("#nroPedido").text(vars.pedido);
+    $("#nomeImp").text(decodeURI(vars.nomeimp));
+    $("#descEtiqueta").text(decodeURI(vars.descetiq));
+
+    url = `${vars.urlApi}rest/pprcSetEtiquetaConferencia`;
+    urlFinalizacao = `${vars.urlApi}rest/pprcFinalizaConferenciaRest`;
+    urlProcessamento = `${vars.urlApi}rest/pprcProcessarEtiquetasCarga`;
+
+    function hideMsgs() {
+      $("#responseDanger").hide();
+      $("#responseSuccess").hide();
+      $("#responseAlert").hide();
+    }
+    function lostInputFocus() {
+      var validLostInput = $("#codbarra").val();
+      if (validLostInput != "" && validLostInput != null) {
+        $("#button").click();
+        $("#codbarra").focus();
+      }
+    }
+
+    $("#estorna").click(() => {
       $("#codbarra").focus();
-      $("#mensagemErroG").hide();
-      $("#mensagemSuccessG").hide();
-      hideMsgs();
-      var count = 0;
-      var etiquetaValida = 0;
-      var etiquetaInvalida = 0;
-      var etiquetaDuplicada = 0;
-      var qtdePalete = 0;
-      var url;
-      var histLeitura = [];
-      var etiquetasToConf = [];
-      var vars = [],
-         hash;
-      var hashes = window.location.href
-         .slice(window.location.href.indexOf("?") + 1)
-         .split("&");
-      for (var i = 0; i < hashes.length; i++) {
-         hash = hashes[i].split("=");
-         vars.push(hash[0]);
-         vars[hash[0]] = hash[1];
-      }
-      vars;
-      var codCarga = vars.carga;
-      var etiquetaValida = vars.totconf;
-      var totalEtiquetas = vars.totetiquetas;
-      var validaentestoque = vars.validarentrada;
-      console.log(validaentestoque);
-      $("#etiquetasToConf").text(vars.totetiquetas);
-      $("#etiquetasValidas").text(etiquetaValida);
-      $("#codCarga").text(`${codCarga} ${decodeURI(vars.desccarga)}`);
-      $("#nroPedido").text(vars.pedido);
-      $("#nomeImp").text(decodeURI(vars.nomeimp));
-      $("#descEtiqueta").text(decodeURI(vars.descetiq));
-
-      url = `${vars.urlApi}rest/pprcSetEtiquetaConferencia`;
-      urlFinalizacao = `${vars.urlApi}rest/pprcFinalizaConferenciaRest`;
-
-      function hideMsgs() {
-         $("#responseDanger").hide();
-         $("#responseSuccess").hide();
-         $("#responseAlert").hide();
-      }
-      function lostInputFocus() {
-         var validLostInput = $("#codbarra").val();
-         if (validLostInput != "" && validLostInput != null) {
-            $("#button").click();
-            $("#codbarra").focus();
-         }
-      }
-
-      $("#estorna").click(() => {
-         $("#codbarra").focus();
+    });
+    $(document).ready(function () {
+      $("#clearPage").click(function () {
+        document.location.reload(true);
       });
-      $(document).ready(function () {
-         $("#clearPage").click(function () {
-            document.location.reload(true);
-         });
-         $(document).keypress(function (e) {
-            if (e.which == 13) {
-               $("#button").focus();
-            }
-         });
-         $("#btnZeraPalete").click(() => {
-            qtdePalete = 0;
-            $("#qtdePalete").text(qtdePalete);
-         });
-         $("#finalizaConferencia").click(() => {
-            finalizaConferencia();
-         });
-         $("button").click(function (e) {
-            hideMsgs();
-            var readBarcode = $("#codbarra").val().trim();
-            var estorna = $("#estorna").is(":checked");
-            var jaLida = false;
-            etiquetasToConf.forEach((value) => {
-               if (value == readBarcode) {
-                  jaLida = true;
-                  return;
-               }
-            });
-            if (readBarcode != "" && !jaLida) {
-               etiquetasToConf.push(readBarcode);
-               var parm = new Object();
-               parm.CodigoBarras = readBarcode.trim();
-               parm.CargaId = vars.carga;
-               parm.ModeloEtiquetaId = vars.etiqueta;
-               parm.ImpressoraId = vars.imp;
-               parm.PedidoId = vars.pedido;
-               parm.Estornar = estorna ? "1" : "0";
-               parm.isConfEstoque = validaentestoque == 'true'
-               parm.UsuarioId = vars.user;
-               parm.UsuarioLogin = vars.username;
-               $.ajax({
-                  url: url,
-                  method: "POST",
-                  dataType: "json",
-                  contentType: "application/json;charset=UTF-8",
-                  data: JSON.stringify(parm),
-                  beforeSend: function () { },
-               })
-                  .done(function (msg) {
-                     if (msg.MensagemErro == "") {
-                        msg.Mensagem = `${msg.ProdutoCodigo ? msg.ProdutoCodigo : " "} ${msg.ProdutoDescricao ? msg.ProdutoDescricao : " "} ${msg.RevestimentoId ? msg.RevestimentoId : ""} ${msg.RevestimentoDescricao ? msg.RevestimentoDescricao : ""}`;
-                        histLeitura.push(`<li style="color:#041A56;">Etiqueta:${msg.EtiquetaProducaoId ? msg.EtiquetaProducaoId : ' '} Produto:${msg.ProdutoCodigo ? msg.ProdutoCodigo : ' '} ${msg.Mensagem ? msg.Mensagem : ' '} </li>`);
-                        etiquetaValida++;
-                        qtdePalete++;
-                        totalEtiquetas = totalEtiquetas - 1;
-                        $("#etiquetasToConf").text(totalEtiquetas);
-                        $("#mensagemErroG").hide();
-                        $("#mensagemSuccessG").hide();
-                        $("#qtdePalete").text(qtdePalete);
-                        $("#etiquetasValidas").text(etiquetaValida);
+      $(document).keypress(function (e) {
+        if (e.which == 13) {
+          $("#button").focus();
+        }
+      });
+      $("#btnZeraPalete").click(() => {
+        qtdePalete = 0;
+        $("#qtdePalete").text(qtdePalete);
+      });
+      $("#finalizaConferencia").click(() => {
+        finalizaConferencia();
+      });
+      $("button").click(function (e) {
+        hideMsgs();
+        var readBarcode = $("#codbarra").val().trim();
+        var estorna = $("#estorna").is(":checked");
+        var jaLida = false;
+        etiquetasToConf.forEach((value) => {
+          if (value == readBarcode) {
+            jaLida = true;
+            return;
+          }
+        });
+        if (readBarcode != "" && !jaLida) {
+          CountOrder++;
+          etiquetasToConf.push(readBarcode);
+          // let today = new Date
+          // let now = Date.parse(today);
+          // let order = '' + now;
+          // order = order.replace('000', today.getMilliseconds())
+          var parm = new Object();
+          parm.CodigoBarras = readBarcode.trim();
+          parm.CargaId = vars.carga;
+          parm.ModeloEtiquetaId = vars.etiqueta;
+          parm.ImpressoraId = vars.imp;
+          parm.PedidoId = vars.pedido;
+          parm.Estornar = estorna ? "1" : "0";
+          parm.isConfEstoque = validaentestoque == 'true'
+          parm.UsuarioId = vars.user;
+          parm.UsuarioLogin = vars.username;
+          parm.Order = '' + CountOrder;
 
-                        //Finaliza a conferência da carga no GNI
-                        if (totalEtiquetas <= 0) {
-                           finalizaConferencia();
-                        }
-                     } else {
-                        etiquetasToConf.splice(etiquetasToConf.indexOf(readBarcode), 1);
-                        if (readBarcode != "")
-                           histLeitura.push(
-                              `<li style="color:red;">${readBarcode} - ${msg.ProdutoCodigo ? msg.ProdutoCodigo : " "} ${msg.MensagemErro}</li>`
-                           );
-                        etiquetaInvalida++;
-                        $("#mensagemErroG").text(`${readBarcode} - ${msg.MensagemErro}`);
-                        $("#mensagemErroG").show();
-                        $("#etiquetasInvalidas").text(etiquetaInvalida);
-                     }
-                     etiquetasToConf.push(readBarcode);
-                     $("#codbarra").focus();
-                     $("#historicoLeitura").html(histLeitura);
-                  })
-                  .fail(function (jqXHR, textStatus, msg) {
-                     $("#dangerText").text(msg.Mensagem);
-                     $("#responseDanger").show();
-                  });
-            } else {
-               $("#alertText").text("Favor, informar um código de etiqueta");
-               $("#responseAlert").show();
-               if (jaLida) {
-                  etiquetaDuplicada++;
-                  $("#etiqeutasDuplicadas").text(etiquetaDuplicada);
+          $.ajax({
+            url: url,
+            method: "POST",
+            dataType: "json",
+            contentType: "application/json;charset=UTF-8",
+            data: JSON.stringify(parm),
+            beforeSend: function () { },
+          })
+            .done(function (msg) {
+              if (msg.MensagemErro == "") {
+                msg.Mensagem = `${msg.ProdutoCodigo ? msg.ProdutoCodigo : " "} ${msg.ProdutoDescricao ? msg.ProdutoDescricao : " "} ${msg.RevestimentoId ? msg.RevestimentoId : ""} ${msg.RevestimentoDescricao ? msg.RevestimentoDescricao : ""}`;
+                histLeitura.push(`<li style="color:#041A56;">Etiqueta:${msg.EtiquetaProducaoId ? msg.EtiquetaProducaoId : ' '} Produto:${msg.ProdutoCodigo ? msg.ProdutoCodigo : ' '} ${msg.Mensagem ? msg.Mensagem : ' '} </li>`);
+                etiquetaValida++;
+                etqConferidas++;
+                qtdePalete++;
+                totalEtiquetas = totalEtiquetas - 1;
+                $("#etiquetasToConf").text(totalEtiquetas);
+                $("#mensagemErroG").hide();
+                $("#mensagemSuccessG").hide();
+                $("#qtdePalete").text(qtdePalete);
+                $("#etiquetasValidas").text(etiquetaValida);
+
+                //Finaliza a conferência da carga no GNI
+                if (totalEtiquetas <= 0) {
+                  finalizaConferencia();
+                }
+
+                if (etqConferidas >= tatalPedidos && tatalPedidos > 0) {
+                  processaEtiqueta();
+                }
+
+              } else {
+                etiquetasToConf.splice(etiquetasToConf.indexOf(readBarcode), 1);
+                if (readBarcode != "")
                   histLeitura.push(
-                     `<li style="color:red;">${readBarcode} - Leitura duplicada</li>`
+                    `<li style="color:red;">${readBarcode} - ${msg.ProdutoCodigo ? msg.ProdutoCodigo : " "} ${msg.MensagemErro}</li>`
                   );
-               }
-            }
-            $("#codbarra").val("");
-            $("#codbarra").focus();
-            $("#historicoLeitura").html(histLeitura);
-            if (count >= histLeitura.length) {
-               $("#responseAlert").hide();
-            }
-            if (readBarcode != null) {
-               count++;
-            }
-         });
-
-         function finalizaConferencia() {
-            $.LoadingOverlay("show", {
-               fontawesome: "fas fa-box-check",
-               fontawesomeColor: "#273A6E",
-            });
-            $("#loadingindicator").LoadingOverlay("show");
-            console.log('FINALIZANDO');
-            var parmFinalizacao = new Object();
-            parmFinalizacao.CargaId = vars.carga;
-            parmFinalizacao.NomeConferente = vars.username;
-            console.log(urlFinalizacao);
-            $.ajax({
-               url: urlFinalizacao,
-               method: "POST",
-               dataType: "json",
-               contentType: "application/json;charset=UTF-8",
-               data: JSON.stringify(parmFinalizacao),
-               beforeSend: function () { },
+                etiquetaInvalida++;
+                $("#mensagemErroG").text(`${readBarcode} - ${msg.MensagemErro}`);
+                $("#mensagemErroG").show();
+                $("#etiquetasInvalidas").text(etiquetaInvalida);
+              }
+              etiquetasToConf.push(readBarcode);
+              $("#codbarra").focus();
+              $("#historicoLeitura").html(histLeitura);
             })
-               .done(function (msg) {
-                  if (msg.isError) {
-                     $("#mensagemErroG").text(`Erro: ${msg.message}`);
-                     $("#mensagemErroG").show();
-                  } else {
-                     $("#mensagemSuccessG").text(`Conferência finalizada com sucesso!`);
-                     $("#mensagemSuccessG").show();
-                  }
-               })
-               .fail(function (jqXHR, textStatus, msg) {
-                  $("#mensagemErroG").text(`Ocorreu um erro ao finalizar a conferência (${msg})`);
-                  $("#mensagemErroG").show();
-               });
-
-            $.LoadingOverlay("hide");
-            $("#loadingindicator").LoadingOverlay("hide");
-         }
-
+            .fail(function (jqXHR, textStatus, msg) {
+              $("#dangerText").text(msg.Mensagem);
+              $("#responseDanger").show();
+            });
+        } else {
+          $("#alertText").text("Favor, informar um código de etiqueta");
+          $("#responseAlert").show();
+          if (jaLida) {
+            etiquetaDuplicada++;
+            $("#etiqeutasDuplicadas").text(etiquetaDuplicada);
+            histLeitura.push(
+              `<li style="color:red;">${readBarcode} - Leitura duplicada</li>`
+            );
+          }
+        }
+        $("#codbarra").val("");
+        $("#codbarra").focus();
+        $("#historicoLeitura").html(histLeitura);
+        if (count >= histLeitura.length) {
+          $("#responseAlert").hide();
+        }
+        if (readBarcode != null) {
+          count++;
+        }
       });
-   </script>
+
+      function processaEtiqueta() {
+        if (etqConferidas > 0) {
+          $.LoadingOverlay("show", {
+            fontawesome: "fas fa-box-check",
+            fontawesomeColor: "#273A6E",
+          });
+          $("#loadingindicator").LoadingOverlay("show");
+          console.log('ATINGIDO QTDE PEDIDO');
+          console.log('urlProcessamento: ' + urlProcessamento);
+          $.ajax({
+            url: urlProcessamento,
+            method: "POST",
+            dataType: "json",
+            contentType: "application/json;charset=UTF-8",
+            beforeSend: function () { },
+          }).done(function (msg) {
+            if (msg.isError) {
+              console.log('Erro ao processar etiquetas');
+            } else {
+              $("#mensagemSuccessG").text(`Etiquetas processadas para impressão`);
+              $("#mensagemSuccessG").show();
+            }
+          })
+            .fail(function (jqXHR, textStatus, msg) {
+              console.log(msg);
+            });
+          $.LoadingOverlay("hide");
+          $("#loadingindicator").LoadingOverlay("hide");
+        }
+      }
+
+      function finalizaConferencia() {
+        $.LoadingOverlay("show", {
+          fontawesome: "fas fa-box-check",
+          fontawesomeColor: "#273A6E",
+        });
+        $("#loadingindicator").LoadingOverlay("show");
+        console.log('FINALIZANDO');
+        var parmFinalizacao = new Object();
+        parmFinalizacao.CargaId = vars.carga;
+        parmFinalizacao.NomeConferente = vars.username;
+        console.log(urlFinalizacao);
+        $.ajax({
+          url: urlFinalizacao,
+          method: "POST",
+          dataType: "json",
+          contentType: "application/json;charset=UTF-8",
+          data: JSON.stringify(parmFinalizacao),
+          beforeSend: function () { },
+        })
+          .done(function (msg) {
+            if (msg.isError) {
+              $("#mensagemErroG").text(`Erro: ${msg.message}`);
+              $("#mensagemErroG").show();
+            } else {
+              $("#mensagemSuccessG").text(`Conferência finalizada com sucesso!`);
+              $("#mensagemSuccessG").show();
+            }
+          })
+          .fail(function (jqXHR, textStatus, msg) {
+            $("#mensagemErroG").text(`Ocorreu um erro ao finalizar a conferência (${msg})`);
+            $("#mensagemErroG").show();
+          });
+
+        $.LoadingOverlay("hide");
+        $("#loadingindicator").LoadingOverlay("hide");
+      }
+
+    });
+  </script>
 </body>
 
 </html>

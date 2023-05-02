@@ -12,8 +12,7 @@
   <div class="page">
     <div class="form">
       <div class="card">
-        <label>Código Barras</label><input type="text" name="codbarra" id="codbarra"
-          onfocusout="lostInputFocus()" /><button id="button">Confirmar</button>
+        <label>Código Barras</label><input type="text" name="codbarra" id="codbarra" onfocusout="lostInputFocus()" /><button id="button">Confirmar</button>
         <div class="row">
           <div class="contadores">
             <span>Etiquetas válidas <span id="etiquetasValidas">0</span></span><span>Etiquetas inválidas
@@ -93,15 +92,18 @@
           $("#button").focus();
         }
       });
+
       $("button").click(function (e) {
         $("#responseDanger").hide();
         $("#responseSuccess").hide();
         var readBarcode = $("#codbarra").val();
         if (readBarcode != "") {
           var parm = new Object();
-          (parm.UsuarioId = vars.user),
-            (parm.LocalEstoqueId = vars.local),
-            (parm.CodigoBarras = readBarcode.trim());
+          parm.UsuarioId = vars.user;
+          parm.LocalEstoqueId = vars.local;
+          parm.CodigoBarras = readBarcode.trim();
+          parm.NroPalete = 0;
+
           $.ajax({
             url: url,
             method: "POST",

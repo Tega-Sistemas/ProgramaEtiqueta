@@ -74,17 +74,17 @@
             vars[hash[0]] = hash[1];
         }
         vars;
-        var descCarga   = vars.descricao;
-        etiquetaValida  = vars.TotConf;
+        var descCarga = vars.descricao;
+        etiquetaValida = vars.TotConf;
         etiquetasToConf = vars.TotCarga - vars.TotConf;
-        totalEtiquetas  = etiquetasToConf
+        totalEtiquetas = etiquetasToConf
         $("#etiquetasValidas").text(etiquetaValida);
         $("#etiquetasToConf").text(totalEtiquetas);
         $("#CargaId").text(` ${decodeURI(vars.CargaId)}`);
         url = `${vars.urlapi}rest/pprcConfEmbalagemAssistenciaRest`;
         function hideMsgs() {
             $("#responseDanger").hide();
-            $("#responseSuccess").hide();
+            $("#responseSuccess").hide()
             $("#responseAlert").hide();
         }
         function verifyReturn(msg) {
@@ -124,7 +124,8 @@
                     parm.CodigoBarras = readBarcode.trim();
                     parm.CargaId = vars.CargaId;
                     parm.Usuario = vars.Usuario;
-					console.log(JSON.stringify(parm));
+                    
+                    console.log(JSON.stringify(parm));
                     $.ajax({
                         url: url,
                         method: "POST",
@@ -171,7 +172,7 @@
                                     );
                                 mensagemErroG = `${msg.MensagemErro}`
                                 etiquetaInvalida++;
-                                $("#etiquetasInvalidas").text(etiquetaInvalida);
+                                $("#etiquetasInvalidas").text();
                                 $("#mensagemErroG").text(mensagemErroG)
                                 $("#mensagemErroG").show();
                             }
