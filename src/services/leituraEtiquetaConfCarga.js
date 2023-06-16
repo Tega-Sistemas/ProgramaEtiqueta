@@ -30,7 +30,7 @@ $("#etiquetasValidas").text(etiquetaValida);
 $("#codCarga").text(`${vars.carga} ${decodeURI(descCarga)}`);
 $("#nroEntrega").text(vars.numentrega);
 url = `${vars.urlApi}/rest/pprcleretiquetacargarest`;
-url = url.replace("//", "/");
+url = url.replace("//rest", "/rest");
 
 function hideMsgs() {
     $("#responseDanger").hide();
