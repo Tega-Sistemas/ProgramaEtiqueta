@@ -16,7 +16,10 @@
                 <div class="rowCard">
                     <div class="subcard">
                         <p class="cargaInfo">Carga:<span id="codCarga"></span></p>
-                        <p class="cargaInfo">Nº Entrega:<span id="nroEntrega"></span></p><label>Código de Barra</label>
+                        <p class="cargaInfo">Nº Entrega:<span id="nroEntrega"></span></p><label>Código de Barra</label></p>
+                        <p class="checkbox_box">
+                            <input type="checkbox" id="estorna" class="checkBox" name="estorna">
+                            <span>Estorna etiqueta?</span>
                         </p>
                         <input type="text" name="codbarra" id="codbarra" onfocusout="lostInputFocus()" />
                         <button id="button" class="sendButton">Confirmar</button>
@@ -54,9 +57,10 @@
         </div>
     </div>
     </div>
+
     <script type="text/javascript" src="./src/jquery.min.js"></script>
-    <script src="./src/services/leituraEtiquetaConfCarga.js"></script>
-    <script src="./src/services/axios.min.js"></script>
+    <script type="text/javascript" src="./src/services/leituraEtiquetaConfCargaPreConferencia.js"></script>
+    <script type="text/javascript" src="./src/services/axios.min.js"></script>
 
 </body>
 

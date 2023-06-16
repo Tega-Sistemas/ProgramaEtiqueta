@@ -21,6 +21,7 @@ var url;
 var count = 0;
 var requisicoes = [];
 var promises = [];
+var isProcessing = false;
 var vars = [],
   hash;
 
@@ -203,58 +204,70 @@ function finalizaConferencia() {
 }
 
 function enviarRequisicoesEmOrdem() {
+  let CodigoBarras;
+  this.isProcessing = true;
   return new Promise((resolve, reject) => {
     function processarProximaPromessa(promessaAtual) {
-      if (promessaAtual >= promises.length) {
-        // todas as promessas foram processadas
-        resolve();
-        return;
+      if (promises.length === 0) {
+        console.log("zerou");
+        this.isProcessing = false;
       }
 
-      const promessa = promises[promessaAtual];
-      promessa()
-        .then(function (result) {
-          if (result.data.MensagemErro == "") {
-            this.etiquetaValida++;
-            this.etqConferidas++;
-            this.qtdePalete++;
-            this.totalEtiquetas = this.totalEtiquetas - 1;
-            $("#etiquetasToConf").text(this.totalEtiquetas);
-            $("#mensagemErroG").hide();
-            $("#mensagemSuccessG").hide();
-            $("#qtdePalete").text(this.qtdePalete);
-            $("#etiquetasValidas").text(this.etiquetaValida);
-            this.histLeitura.push(
-              `<li style="color:#041A56;">${result.data.Mensagem}</li>`
-            );
-            if (totalEtiquetas == 0) {
-              finalizaConferencia();
-            }
-          } else {
-            this.histLeitura.push(
-              `<li style="color:red;">${result.data.MensagemErro}</li>`
-            );
-            this.etiquetaInvalida++;
-            $("#etiquetasInvalidas").text(this.etiquetaInvalida);
-            $("#mensagemErroG").text(`${result.data.MensagemErro}`);
-            $("#mensagemErroG").show();
-          }
-        })
-        .catch(function (error) {
-          histLeitura.push(
-            `<li style="color:red;"> Ocorreu um erro inesperado. ${JSON.stringify(
-              error
-            )}</li>`
-          );
-          reject(error);
-        })
-        .finally(function () {
-          // remove a promessa da array após a execução
+      if (promises[promessaAtual] != null) {
+        CodigoBarras = promises[promessaAtual].data.json.CodigoBarras;
+
+        if (CodigoBarras != processarProximaPromessa.lastCodBarras) {
+          processarProximaPromessa.lastCodBarras = CodigoBarras;
+          const promessa = () => axios(promises[promessaAtual]);
+          promessa()
+            .then(function (result) {
+              if (result.data.MensagemErro == "") {
+                this.etiquetaValida++;
+                this.etqConferidas++;
+                this.qtdePalete++;
+                this.totalEtiquetas = this.totalEtiquetas - 1;
+                $("#etiquetasToConf").text(this.totalEtiquetas);
+                $("#mensagemErroG").hide();
+                $("#mensagemSuccessG").hide();
+                $("#qtdePalete").text(this.qtdePalete);
+                $("#etiquetasValidas").text(this.etiquetaValida);
+                this.histLeitura.push(
+                  `<li style="color:#041A56;">${result.data.Mensagem}</li>`
+                );
+                if (totalEtiquetas == 0) {
+                  finalizaConferencia();
+                }
+              } else {
+                this.histLeitura.push(
+                  `<li style="color:red;">${result.data.MensagemErro}</li>`
+                );
+                this.etiquetaInvalida++;
+                $("#etiquetasInvalidas").text(this.etiquetaInvalida);
+                $("#mensagemErroG").text(`${result.data.MensagemErro}`);
+                $("#mensagemErroG").show();
+              }
+            })
+            .catch(function (error) {
+              histLeitura.push(
+                `<li style="color:red;"> Ocorreu um erro inesperado. ${JSON.stringify(
+                  error
+                )}</li>`
+              );
+              reject(error);
+            })
+            .finally(function () {
+              // remove a promessa da array após a execução
+              promises.splice(promessaAtual, 1);
+              // chama a próxima promessa
+              processarProximaPromessa(promessaAtual);
+              $("#historicoLeitura").html(histLeitura);
+            });
+        } else {
+          console.log("---------------Entrou no else");
           promises.splice(promessaAtual, 1);
-          // chama a próxima promessa
           processarProximaPromessa(promessaAtual);
-          $("#historicoLeitura").html(histLeitura);
-        });
+        }
+      }
     }
 
     // inicia o processamento da primeira promessa
@@ -270,12 +283,17 @@ function triggerArray() {
     tamanhoAtual >= 20
   ) {
     requisicoes.forEach(function (request) {
-      if (request.data.CodigoBarras != "") {
-        promises.push(() => axios(request));
+      if (request.data.json.CodigoBarras != "") {
+        promises.push(request);
       }
     });
 
-    enviarRequisicoesEmOrdem();
+    if (!this.isProcessing) {
+      console.log("Chamando processamento");
+      enviarRequisicoesEmOrdem();
+    } else {
+      console.log("já processando!");
+    }
 
     requisicoes = [];
   }

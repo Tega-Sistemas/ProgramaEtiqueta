@@ -10,21 +10,20 @@
 
 <body id="loadingindicator">
   <div class="page">
-    <div class="form bigForm" style="background-color: #bedbff;width: 90%;">
+    <div class="form bigForm">
       <div class="card">
         <h1 id="mensagemErroG"></h1>
         <h1 id="mensagemSuccessG" class="mensagemSuccessG"></h1>
         <div class="rowCard">
           <div class="subcard">
-            <p class="cargaInfo">Carga:<span id="codCarga"></span></p>
-            <p class="cargaInfo">Nº Pedido:<span id="nroPedido"></span></p>
+            <p class="cargaInfo">Nro. Romaneio:<span id="codCarga"></span></p>
             <p class="checkbox_box">
               <input type="checkbox" id="estorna" class="checkBox" name="estorna">
               <span>Estorna etiqueta?</span>
             </p>
             <label>Código de Barra</label>
             <input type="text" name="codbarra" id="codbarra" onfocusout="lostInputFocus()" />
-            <button id="button" class="sendButton">Confirmar</button>
+            <button id="button" class="sendButtonSaas">Confirmar</button>
           </div>
           <div class="subcard">
             <div class="contadores">
@@ -37,7 +36,6 @@
             <div class="btn-group" style="width:100%">
               <button id="btnZeraPalete" class="zeraPateleBtn">Zerar Qtde. Palete</button>
               <button id="clearPage">Limpar página</button>
-              <button id="finalizaConferencia">Finalizar Conferênica</button>
             </div>
           </div>
         </div>
@@ -49,19 +47,10 @@
         <div id="responseAlert" class="responseCard alert">
           <p id="alertText"></p>
         </div>
-        <p>
-          <span>Impressora:
-            <span style="color:brown;" id="nomeImp"></span>
-          </span>
-          <span>Etiqueta:
-            <span style="color:brown;" id="descEtiqueta">
-            </span>
-          </span>
-        </p>
       </div>
     </div>
   </div>
-  <div class="form bigForm history" style="background-color: #bedbff;width: 90%;">
+  <div class="form bigForm history">
     <h3>Histórico de leitura de etiqueta</h3>
     <div class="card">
       <ul id="historicoLeitura"></ul>
@@ -71,7 +60,7 @@
 
   <script type="text/javascript" src="./src/jquery.min.js"></script>
   <script src="./src/loadingover/dist/loadingoverlay.min.js"></script>
-  <script src="./src/services/leituraEtiquetaConfCargaEtiqueta.js"></script>
+  <script src="./src/services/leituraEtiquetaConferenciaRomaneioSaas.js"></script>
   <script src="./src/services/axios.min.js"></script>
 
 </body>
