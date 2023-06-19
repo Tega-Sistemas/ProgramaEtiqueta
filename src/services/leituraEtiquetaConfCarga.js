@@ -29,8 +29,8 @@ $("#etiquetasToConf").text(vars.totetiquetas);
 $("#etiquetasValidas").text(etiquetaValida);
 $("#codCarga").text(`${vars.carga} ${decodeURI(descCarga)}`);
 $("#nroEntrega").text(vars.numentrega);
-url = `${vars.urlApi}/rest/pprcleretiquetacargarest`;
-url = url.replace("//rest", "/rest");
+url = `${vars.urlApi}rest/pprcleretiquetacargarest`;
+//url = url.replace("//rest", "/rest");
 
 function hideMsgs() {
     $("#responseDanger").hide();
@@ -298,4 +298,4 @@ function triggerArray() {
     triggerArray.tamanhoAnterior = tamanhoAtual;
 }
 
-setInterval(triggerArray, 1500);
+setInterval(triggerArray, 500);
