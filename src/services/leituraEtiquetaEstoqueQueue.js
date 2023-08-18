@@ -72,9 +72,6 @@ $(document).ready(function () {
 
             json.json = parm;
 
-            console.log(json);
-            console.log("urlNode", urlNode);
-
             $.ajax({
                 url: urlNode,
                 method: "POST",
