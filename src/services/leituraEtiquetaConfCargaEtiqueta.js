@@ -18,23 +18,25 @@ var validaentestoque;
 var tatalPedidos;
 var qtdeTotalEtiquetas = 0;
 var url;
+var urlLog;
 var count = 0;
 var requisicoes = [];
 var promises = [];
 var isProcessing = false;
 var vars = [],
-  hash;
+    hash;
 
 var index = 0;
+var logMessage;
 
 var hashes = window.location.href
-  .slice(window.location.href.indexOf("?") + 1)
-  .split("&");
+    .slice(window.location.href.indexOf("?") + 1)
+    .split("&");
 
 for (var i = 0; i < hashes.length; i++) {
-  hash = hashes[i].split("=");
-  vars.push(hash[0]);
-  vars[hash[0]] = hash[1];
+    hash = hashes[i].split("=");
+    vars.push(hash[0]);
+    vars[hash[0]] = hash[1];
 }
 vars;
 
@@ -55,250 +57,298 @@ $("#descEtiqueta").text(decodeURI(vars.descetiq));
 url = `${vars.urlApi}rest/pprcleretiquetacargacomimpressaorest`;
 urlNode = `${vars.urlNodeService}queue`;
 urlFinalizacao = `${vars.urlApi}rest/pprcFinalizaConferenciaRest`;
+urlLog = `${vars.urlApi}rest/postSetLeituraEtiqueta`;
 
 function hideMsgs() {
-  $("#responseDanger").hide();
-  $("#responseSuccess").hide();
-  $("#responseAlert").hide();
+    $("#responseDanger").hide();
+    $("#responseSuccess").hide();
+    $("#responseAlert").hide();
 }
 
 function lostInputFocus() {
-  var validLostInput = $("#codbarra").val();
-  if (validLostInput != "" && validLostInput != null) {
-    $("#button").click();
-    $("#codbarra").focus();
-  }
+    var validLostInput = $("#codbarra").val();
+    if (validLostInput != "" && validLostInput != null) {
+        $("#button").click();
+        $("#codbarra").focus();
+    }
 }
 
 $("#estorna").click(() => {
-  $("#codbarra").focus();
+    $("#codbarra").focus();
 });
 
 $("#clearPage").click(function () {
-  document.location.reload(true);
+    document.location.reload(true);
 });
 
 $(document).keypress(function (e) {
-  if (e.which == 13) {
-    $("#button").focus();
-  }
+    if (e.which == 13) {
+        $("#button").focus();
+    }
 });
 
 $("#btnZeraPalete").click(() => {
-  qtdePalete = 0;
-  $("#qtdePalete").text(qtdePalete);
+    qtdePalete = 0;
+    $("#qtdePalete").text(qtdePalete);
 });
 
 $("#finalizaConferencia").click(() => {
-  finalizaConferencia();
+    finalizaConferencia();
 });
 
 $("button").click(async function (e) {
-  hideMsgs();
-  readBarcode = $("#codbarra").val().trim();
-  let estorna = $("#estorna").is(":checked");
-  let jaLida = false;
+    hideMsgs();
+    readBarcode = $("#codbarra").val().trim();
+    let estorna = $("#estorna").is(":checked");
+    let jaLida = false;
 
-  if (!estorna) {
-    etiquetasToConf.forEach((value) => {
-      if (value == readBarcode) {
-        jaLida = true;
-        return;
-      }
-    });
-  }
-
-  if (readBarcode != "" && !jaLida) {
     if (!estorna) {
-      etiquetasToConf.push(readBarcode);
+        etiquetasToConf.forEach((value) => {
+            if (value == readBarcode) {
+                jaLida = true;
+                return;
+            }
+        });
     }
 
-    var parm = new Object();
-    parm.CodigoBarras = readBarcode.trim();
-    parm.CargaId = vars.carga;
-    parm.ModeloEtiquetaId = vars.etiqueta;
-    parm.ImpressoraId = vars.imp;
-    parm.PedidoId = vars.pedido;
-    parm.Estornar = estorna ? 1 : 0;
-    parm.isConfEstoque = validaentestoque == "true";
-    parm.UsuarioId = vars.user;
-    parm.UsuarioLogin = vars.username;
-    parm.reqURL = url;
+    if (readBarcode != "" && !jaLida) {
+        if (!estorna) {
+            etiquetasToConf.push(readBarcode);
+        }
 
-    let json = new Object();
-    json.json = parm;
+        var parm = new Object();
+        parm.CodigoBarras = readBarcode.trim();
+        parm.CargaId = vars.carga;
+        parm.ModeloEtiquetaId = vars.etiqueta;
+        parm.ImpressoraId = vars.imp;
+        parm.PedidoId = vars.pedido;
+        parm.Estornar = estorna ? 1 : 0;
+        parm.isConfEstoque = validaentestoque == "true";
+        parm.UsuarioId = vars.user;
+        parm.UsuarioLogin = vars.username;
+        parm.reqURL = url;
 
-    requisicoes.push({
-      url: urlNode,
-      method: "POST",
-      data: json,
-    });
+        let json = new Object();
+        json.json = parm;
 
-    console.log("Codigo Barras: " + readBarcode);
-  } else {
-    $("#alertText").text("Favor, informar um código de etiqueta");
-    $("#responseAlert").show();
-    if (jaLida) {
-      etiquetaDuplicada++;
-      $("#etiqeutasDuplicadas").text(etiquetaDuplicada);
-      histLeitura.push(
-        `<li style="color:red;">${readBarcode} - Leitura duplicada</li>`
-      );
+        requisicoes.push({
+            url: urlNode,
+            method: "POST",
+            data: json,
+        });
+
+        //console.log("Codigo Barras: " + readBarcode);
+    } else {
+        $("#alertText").text("Favor, informar um código de etiqueta");
+        $("#responseAlert").show();
+        if (jaLida) {
+            etiquetaDuplicada++;
+            $("#etiqeutasDuplicadas").text(etiquetaDuplicada);
+            histLeitura.push(
+                `<li style="color:red;">${readBarcode} - Leitura duplicada</li>`
+            );
+        }
     }
-  }
 
-  $("#codbarra").val("");
-  $("#codbarra").focus();
-  $("#historicoLeitura").html(histLeitura);
+    $("#codbarra").val("");
+    $("#codbarra").focus();
+    $("#historicoLeitura").html(histLeitura);
 
-  if (count >= histLeitura.length) {
-    $("#responseAlert").hide();
-  }
+    if (count >= histLeitura.length) {
+        $("#responseAlert").hide();
+    }
 
-  if (readBarcode != null) {
-    count++;
-  }
+    if (readBarcode != null) {
+        count++;
+    }
 });
 
 function finalizaConferencia() {
-  $.LoadingOverlay("show", {
-    fontawesome: "fas fa-box-check",
-    fontawesomeColor: "#273A6E",
-  });
-
-  $("#loadingindicator").LoadingOverlay("show");
-
-  var parmFinalizacao = new Object();
-  var jsonFinalizacao = new Object();
-  parmFinalizacao.CargaId = this.vars.carga;
-  parmFinalizacao.NomeConferente = this.vars.username;
-  parmFinalizacao.reqURL = this.urlFinalizacao;
-  jsonFinalizacao.json = parmFinalizacao;
-
-  $.ajax({
-    url: urlNode,
-    method: "POST",
-    dataType: "json",
-    contentType: "application/json;charset=UTF-8",
-    data: JSON.stringify(jsonFinalizacao),
-    beforeSend: function () {},
-  })
-    .done(function (msg) {
-      if (msg.isError) {
-        $("#mensagemErroG").text(`Erro: ${msg.message}`);
-        $("#mensagemErroG").show();
-      } else {
-        $("#mensagemSuccessG").text(`Conferência finalizada com sucesso!`);
-        $("#mensagemSuccessG").show();
-      }
-    })
-    .fail(function (jqXHR, textStatus, msg) {
-      $("#mensagemErroG").text(
-        `Ocorreu um erro ao finalizar a conferência (${msg})`
-      );
-      $("#mensagemErroG").show();
+    $.LoadingOverlay("show", {
+        fontawesome: "fas fa-box-check",
+        fontawesomeColor: "#273A6E",
     });
 
-  $.LoadingOverlay("hide");
-  $("#loadingindicator").LoadingOverlay("hide");
+    $("#loadingindicator").LoadingOverlay("show");
+
+    var parmFinalizacao = new Object();
+    var jsonFinalizacao = new Object();
+    parmFinalizacao.CargaId = this.vars.carga;
+    parmFinalizacao.NomeConferente = this.vars.username;
+    parmFinalizacao.reqURL = this.urlFinalizacao;
+    jsonFinalizacao.json = parmFinalizacao;
+
+    $.ajax({
+        url: urlNode,
+        method: "POST",
+        dataType: "json",
+        contentType: "application/json;charset=UTF-8",
+        data: JSON.stringify(jsonFinalizacao),
+        beforeSend: function () {},
+    })
+        .done(function (msg) {
+            if (msg.isError) {
+                $("#mensagemErroG").text(`Erro: ${msg.message}`);
+                $("#mensagemErroG").show();
+            } else {
+                $("#mensagemSuccessG").text(
+                    `Conferência finalizada com sucesso!`
+                );
+                $("#mensagemSuccessG").show();
+            }
+        })
+        .fail(function (jqXHR, textStatus, msg) {
+            $("#mensagemErroG").text(
+                `Ocorreu um erro ao finalizar a conferência (${msg})`
+            );
+            $("#mensagemErroG").show();
+        });
+
+    $.LoadingOverlay("hide");
+    $("#loadingindicator").LoadingOverlay("hide");
 }
 
 function enviarRequisicoesEmOrdem() {
-  let CodigoBarras;
-  this.isProcessing = true;
-  return new Promise((resolve, reject) => {
-    function processarProximaPromessa(promessaAtual) {
-      if (promises.length === 0) {
-        console.log("zerou");
-        this.isProcessing = false;
-      }
+    let CodigoBarras;
+    this.isProcessing = true;
+    return new Promise((resolve, reject) => {
+        function processarProximaPromessa(promessaAtual) {
+            if (promises.length === 0) {
+                console.log("zerou");
+                this.isProcessing = false;
+            }
 
-      if (promises[promessaAtual] != null) {
-        CodigoBarras = promises[promessaAtual].data.json.CodigoBarras;
+            if (promises[promessaAtual] != null) {
+                CodigoBarras = promises[promessaAtual].data.json.CodigoBarras;
 
-        if (CodigoBarras != processarProximaPromessa.lastCodBarras) {
-          processarProximaPromessa.lastCodBarras = CodigoBarras;
-          const promessa = () => axios(promises[promessaAtual]);
-          promessa()
-            .then(function (result) {
-              if (result.data.MensagemErro == "") {
-                this.etiquetaValida++;
-                this.etqConferidas++;
-                this.qtdePalete++;
-                this.totalEtiquetas = this.totalEtiquetas - 1;
-                $("#etiquetasToConf").text(this.totalEtiquetas);
-                $("#mensagemErroG").hide();
-                $("#mensagemSuccessG").hide();
-                $("#qtdePalete").text(this.qtdePalete);
-                $("#etiquetasValidas").text(this.etiquetaValida);
-                this.histLeitura.push(
-                  `<li style="color:#041A56;">${result.data.Mensagem}</li>`
-                );
-                if (totalEtiquetas == 0) {
-                  finalizaConferencia();
+                if (CodigoBarras != processarProximaPromessa.lastCodBarras) {
+                    processarProximaPromessa.lastCodBarras = CodigoBarras;
+                    const promessa = () => axios(promises[promessaAtual]);
+                    promessa()
+                        .then(function (result) {
+                            if (result.data.MensagemErro == "") {
+                                this.etiquetaValida++;
+                                this.etqConferidas++;
+                                this.qtdePalete++;
+                                this.totalEtiquetas = this.totalEtiquetas - 1;
+                                $("#etiquetasToConf").text(this.totalEtiquetas);
+                                $("#mensagemErroG").hide();
+                                $("#mensagemSuccessG").hide();
+                                $("#qtdePalete").text(this.qtdePalete);
+                                $("#etiquetasValidas").text(
+                                    this.etiquetaValida
+                                );
+                                this.histLeitura.push(
+                                    `<li style="color:#041A56;">${result.data.Mensagem}</li>`
+                                );
+                                if (totalEtiquetas == 0) {
+                                    finalizaConferencia();
+                                }
+
+                                sendLogToGNI(
+                                    CodigoBarras,
+                                    false,
+                                    result.data.Mensagem
+                                );
+                            } else {
+                                this.histLeitura.push(
+                                    `<li style="color:red;">${result.data.MensagemErro}</li>`
+                                );
+                                this.etiquetaInvalida++;
+                                $("#etiquetasInvalidas").text(
+                                    this.etiquetaInvalida
+                                );
+                                $("#mensagemErroG").text(
+                                    `${result.data.MensagemErro}`
+                                );
+                                $("#mensagemErroG").show();
+
+                                sendLogToGNI(
+                                    CodigoBarras,
+                                    true,
+                                    result.data.MensagemErro
+                                );
+                            }
+                        })
+                        .catch(function (error) {
+                            sendLogToGNI(
+                                CodigoBarras,
+                                true,
+                                JSON.stringify(error)
+                            );
+                            histLeitura.push(
+                                `<li style="color:red;"> Ocorreu um erro inesperado. ${JSON.stringify(
+                                    error
+                                )}</li>`
+                            );
+
+                            reject(error);
+                        })
+                        .finally(function () {
+                            // remove a promessa da array após a execução
+                            promises.splice(promessaAtual, 1);
+                            // chama a próxima promessa
+                            processarProximaPromessa(promessaAtual);
+                            $("#historicoLeitura").html(histLeitura);
+                        });
+                } else {
+                    promises.splice(promessaAtual, 1);
+                    processarProximaPromessa(promessaAtual);
                 }
-              } else {
-                this.histLeitura.push(
-                  `<li style="color:red;">${result.data.MensagemErro}</li>`
-                );
-                this.etiquetaInvalida++;
-                $("#etiquetasInvalidas").text(this.etiquetaInvalida);
-                $("#mensagemErroG").text(`${result.data.MensagemErro}`);
-                $("#mensagemErroG").show();
-              }
-            })
-            .catch(function (error) {
-              histLeitura.push(
-                `<li style="color:red;"> Ocorreu um erro inesperado. ${JSON.stringify(
-                  error
-                )}</li>`
-              );
-              reject(error);
-            })
-            .finally(function () {
-              // remove a promessa da array após a execução
-              promises.splice(promessaAtual, 1);
-              // chama a próxima promessa
-              processarProximaPromessa(promessaAtual);
-              $("#historicoLeitura").html(histLeitura);
-            });
-        } else {
-          console.log("---------------Entrou no else");
-          promises.splice(promessaAtual, 1);
-          processarProximaPromessa(promessaAtual);
+            }
         }
-      }
-    }
 
-    // inicia o processamento da primeira promessa
-    processarProximaPromessa(0);
-  });
+        // inicia o processamento da primeira promessa
+        processarProximaPromessa(0);
+    });
 }
 
 function triggerArray() {
-  let tamanhoAtual = this.requisicoes.length;
+    let tamanhoAtual = this.requisicoes.length;
 
-  if (
-    (tamanhoAtual === triggerArray.tamanhoAnterior && tamanhoAtual > 0) ||
-    tamanhoAtual >= 20
-  ) {
-    requisicoes.forEach(function (request) {
-      if (request.data.json.CodigoBarras != "") {
-        promises.push(request);
-      }
-    });
+    if (
+        (tamanhoAtual === triggerArray.tamanhoAnterior && tamanhoAtual > 0) ||
+        tamanhoAtual >= 20
+    ) {
+        requisicoes.forEach(function (request) {
+            if (request.data.json.CodigoBarras != "") {
+                promises.push(request);
+            }
+        });
 
-    if (!this.isProcessing) {
-      console.log("Chamando processamento");
-      enviarRequisicoesEmOrdem();
-    } else {
-      console.log("já processando!");
+        if (!this.isProcessing) {
+            console.log("Chamando processamento");
+            enviarRequisicoesEmOrdem();
+        } else {
+            console.log("já processando!");
+        }
+
+        requisicoes = [];
     }
 
-    requisicoes = [];
-  }
+    triggerArray.tamanhoAnterior = tamanhoAtual;
+}
 
-  triggerArray.tamanhoAnterior = tamanhoAtual;
+function sendLogToGNI(logCodBarras, isError, logMessage) {
+    let jsonlog = new Object();
+    jsonlog.CodigoBarras = logCodBarras;
+    jsonlog.isError = isError;
+    jsonlog.Message = logMessage;
+
+    $.ajax({
+        url: urlLog,
+        method: "POST",
+        dataType: "json",
+        contentType: "application/json;charset=UTF-8",
+        data: JSON.stringify(jsonlog),
+        beforeSend: function () {},
+    })
+        .done(function (msg) {
+            console.log("Done:", msg);
+        })
+        .fail(function (jqXHR, textStatus, msg) {
+            console.log("Fail:", msg);
+        });
 }
 
 setInterval(triggerArray, 1500);
