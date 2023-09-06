@@ -143,7 +143,7 @@
                     parm.EquipamentoId = $("#codequipamento").val();
                     parm.UsuarioLogin = vars.usuariologin;
                     parm.CodigoBarras = readBarcode.trim();
-                    console.log(parm);
+                    //console.log(parm);
                     $.ajax({
                         url: url,
                         method: "POST",
@@ -194,7 +194,7 @@
                                 $("#mensagemErroG").text(mensagemErroG)
                                 $("#mensagemErroG").show();
                             }
-                            console.log(etiquetasToConf);
+                            //console.log(etiquetasToConf);
                             etiquetasToConf.push(readBarcode);
                             $("#codbarra").focus();
                             $("#historicoLeitura").html(histLeitura);
