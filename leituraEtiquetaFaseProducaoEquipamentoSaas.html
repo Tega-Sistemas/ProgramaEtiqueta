@@ -65,7 +65,7 @@
         var etiquetasToConf = [];
 
         var vars = [], hash;
-        
+
         var hashes = window.location.href
             .slice(window.location.href.indexOf("?") + 1)
             .split("&");
@@ -99,7 +99,7 @@
                     break;
             }
         }
-        
+
         function lostInputFocus() {
             var validLostInput = $("#codbarra").val();
             if (validLostInput != "" && validLostInput != null) {
@@ -110,19 +110,22 @@
 
         function lostInputFocusEquipamento() {
             var validLostInput = $("#codequipamento").val();
-            if (validLostInput.trim() != "" && validLostInput != null && validLostInput != 0 ){
+            let readBarcode = $("#codbarra").val();
+            if (validLostInput.trim() != "" && validLostInput != null && validLostInput != 0) {
                 $("#codbarra").focus();
                 $("#mensagemErroG").hide();
             } else {
                 $("#codequipamento").focus();
-                $("#mensagemErroG").text("Informe um código válido de equipamento!");
-                $("#mensagemErroG").show();         
+                if (readBarcode != null && readBarcode != '') {
+                    $("#mensagemErroG").text("Informe um código válido de equipamento!");
+                    $("#mensagemErroG").show();
+                }
             }
         }
 
         $(document).ready(function () {
             $("#codequipamento").focus();
-            
+
             $("#clearPage").click(function () {
                 document.location.reload(true);
             });
@@ -208,7 +211,8 @@
                     $("#responseAlert").show();
                 }
                 $("#codbarra").val("");
-                $("#codbarra").focus();
+                $("#codequipamento").val("");
+                $("#codequipamento").focus();
                 $("#historicoLeitura").html(histLeitura);
                 if (count >= histLeitura.length) {
                     $("#responseAlert").hide();
