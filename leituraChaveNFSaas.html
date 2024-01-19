@@ -15,17 +15,16 @@
                 <h1 id="mensagemErroG"></h1>
                 <div class="rowCard">
                     <div class="subcard">
-                        <p class="cargaInfo">EQUIPAMENTO:<span id="EquipamentoDescricao"></span></p>
-                        <p class="cargaInfo">SETOR:<span id="SetorDescricao"></span></p>
+                        <p class="cargaInfo">Leitura de chaves NF</p>
                         <label>Código de Barra</label>
                         <input type="text" name="codbarra" id="codbarra" onfocusout="lostInputFocus()" />
                         <button id="button" class="sendButton">Confirmar</button>
                     </div>
                     <div class="subcard">
                         <div class="contadores">
-                            <p>Etiquetas conferidas: <span id="etiquetasValidas">0</span></p>
-                            <p>Etiquetas inválidas: <span id="etiquetasInvalidas">0</span></p>
-                            <p>Leituras duplicadas: <span id="etiqeutasDuplicadas">0</span></p>
+                            <p>NF conferidas: <span id="etiquetasValidas">0</span></p>
+                            <p>NF inválidas: <span id="etiquetasInvalidas">0</span></p>
+                            <p>NF duplicadas: <span id="etiqeutasDuplicadas">0</span></p>
                         </div>
                         <div class="btn-group" style="width:100%">
                             <button id="clearPage">Limpar página</button>
@@ -45,7 +44,7 @@
         </div>
     </div>
     <div class="form history" style="width: 600px;">
-        <h3>Histórico de leitura de etiqueta</h3>
+        <h3>Histórico de leitura de NF</h3>
         <div class="card">
             <ul id="historicoLeitura"></ul>
         </div>
@@ -63,6 +62,7 @@
         var url;
         var histLeitura = [];
         var etiquetasToConf = [];
+        
         var vars = [], hash;
         var hashes = window.location.href
             .slice(window.location.href.indexOf("?") + 1)
@@ -73,13 +73,8 @@
             vars[hash[0]] = hash[1];
         }
         vars;
-        var descCarga = vars.descricao;
-        var totalEtiquetas = vars.totaletiqueta - vars.etiquetaconferida;
-        $("#etiquetasValidas").text(etiquetaValida);
-        $("#SetorDescricao").text(` ${decodeURI(vars.setordescricao)}`);
-        $("#EquipamentoDescricao").text(` ${decodeURI(vars.equipamentodescricao)}`);
-        $("#nroEntrega").text(vars.numentrega);
-        url = `${vars.urlapi}rest/pprcConferenciaEtiquetaFaseProd`;
+
+        url = `${vars.urlapi}rest/pprcLeituraEtiquetaTransfLogistica`;
         function hideMsgs() {
             $("#responseDanger").hide();
             $("#responseSuccess").hide();
@@ -119,11 +114,14 @@
                 var readBarcode = $("#codbarra").val();
                 if (readBarcode != "") {
                     var parm = new Object();
-                    parm.SetorId = vars.setorid;
-                    parm.LicencaId = vars.licencaid;
-                    parm.EquipamentoId = vars.equipamentoid;
-                    parm.UsuarioLogin = vars.usuariologin;
                     parm.CodigoBarras = readBarcode.trim();
+                    parm.CargaId = vars.CargaId;
+                    parm.EmpresaId = vars.EmpresaId;
+                    parm.LocalEstoqueId = vars.LocalEstoqueId;
+                    parm.TransfProdutoLogisticaId = vars.TransfProdutoLogisticaId;
+                    parm.UsuarioId = vars.UsuarioId;
+                    parm.isEstorno = false;
+
                     $.ajax({
                         url: url,
                         method: "POST",
@@ -157,9 +155,7 @@
                                         `<li style="color:#041A56;">${msg.Mensagem} </li>`
                                     );
                                     etiquetaValida++;
-                                    /* * Diminui a quantidade total de etiquetas conforme a carga é lida */
                                     totalEtiquetas--;
-                                    $("#etiquetasToConf").text(totalEtiquetas);
                                     $("#etiquetasValidas").text(etiquetaValida);
                                 }
                             } else {

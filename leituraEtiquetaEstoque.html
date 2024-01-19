@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="./src/style.css" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet" />
+    <!-- <link rel="preconnect" href="https://fonts.gstatic.com" /> -->
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet" /> -->
 </head>
 
 <body>
@@ -133,7 +133,7 @@
                                 $("#etiquetasInvalidas").text(etiquetaInvalida);
                             }
                             $("#codbarra").focus();
-                            $("#historicoLeitura").html(histLeitura);
+                            $("#historicoLeitura").html(histLeitura.reverse());
                         })
                         .fail(function (jqXHR, textStatus, msg) {
                             $("#dangerText").text(msg.MensagemErro);
@@ -145,7 +145,7 @@
                 }
                 $("#codbarra").val("");
                 $("#codbarra").focus();
-                $("#historicoLeitura").html(histLeitura);
+                $("#historicoLeitura").html(histLeitura.reverse());
                 if (count >= histLeitura.length) {
                     $("#responseAlert").hide();
                 } else {
