@@ -29,19 +29,19 @@ li {
 h1 {
     color: #ff4848;
     background-color: #ffa8a8;
-    align-self: center;
     border: 1px solid #970707;
     border-radius: 20px;
     padding: 10px;
+    display: inline-table;
 }
 
 .mensagemSuccessG {
     color: #2da822;
     background-color: #87faa0;
-    align-self: center;
     border: 1px solid #035d1a;
     border-radius: 20px;
     padding: 10px;
+    display: inline-table;
 }
 
 .form .history {

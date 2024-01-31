@@ -10,17 +10,17 @@
 
 <body style="transform: scale(1.0);">
     <div class="page">
-        <div class="form" style="margin-top:40pt; width: 600px;">
-            <div class="card">
+        <div class="form" style="margin-top:40pt; width: 70%;">
+            <div class="card" style="width: 500px;">
                 <h1 id="mensagemErroG"></h1>
                 <div class="rowCard">
-                    <div class="subcard">
+                    <div class="subcard" style="height: auto !important;">
                         <p class="cargaInfo">Leitura de chaves NF</p>
                         <label>Código de Barra</label>
                         <input type="text" name="codbarra" id="codbarra" onfocusout="lostInputFocus()" />
                         <button id="button" class="sendButton">Confirmar</button>
                     </div>
-                    <div class="subcard">
+                    <div class="subcard" style="height: auto !important;">
                         <div class="contadores">
                             <p>NF conferidas: <span id="etiquetasValidas">0</span></p>
                             <p>NF inválidas: <span id="etiquetasInvalidas">0</span></p>
@@ -43,7 +43,7 @@
             </div>
         </div>
     </div>
-    <div class="form history" style="width: 600px;">
+    <div class="form history" style="width: 70%;">
         <h3>Histórico de leitura de NF</h3>
         <div class="card">
             <ul id="historicoLeitura"></ul>
@@ -73,8 +73,9 @@
             vars[hash[0]] = hash[1];
         }
         vars;
-        console.log(vars.urlapi);
-        url = `${vars.urlapi}rest/pprcInserirRastreioChaveNFE`;
+        console.log("URL:", vars.urlApi);
+        url = `${vars.urlApi}rest/pprcInserirRastreioChaveNFE`;
+        console.log(url);
         function hideMsgs() {
             $("#responseDanger").hide();
             $("#responseSuccess").hide();
