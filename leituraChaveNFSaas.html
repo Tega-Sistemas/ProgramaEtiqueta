@@ -73,8 +73,8 @@
             vars[hash[0]] = hash[1];
         }
         vars;
-
-        url = `${vars.urlapi}rest/pprcLeituraEtiquetaTransfLogistica`;
+        console.log(vars.urlapi);
+        url = `${vars.urlapi}rest/pprcInserirRastreioChaveNFE`;
         function hideMsgs() {
             $("#responseDanger").hide();
             $("#responseSuccess").hide();
@@ -114,13 +114,9 @@
                 var readBarcode = $("#codbarra").val();
                 if (readBarcode != "") {
                     var parm = new Object();
-                    parm.CodigoBarras = readBarcode.trim();
-                    parm.CargaId = vars.CargaId;
-                    parm.EmpresaId = vars.EmpresaId;
-                    parm.LocalEstoqueId = vars.LocalEstoqueId;
-                    parm.TransfProdutoLogisticaId = vars.TransfProdutoLogisticaId;
-                    parm.UsuarioId = vars.UsuarioId;
-                    parm.isEstorno = false;
+                    parm.NFIdNFE = readBarcode.trim();
+                    parm.LicencaId = vars.licenca;
+                    parm.EmpresaId = vars.empresa;
 
                     $.ajax({
                         url: url,
@@ -134,7 +130,7 @@
                         },
                     })
                         .done(function (msg) {
-                            if (msg.MensagemErro == "") {
+                            if (msg.MSGErro == "") {
                                 let valReread = false;
                                 for (var i = 0; i < etiquetasToConf.length; i++) {
                                     if (etiquetasToConf[i] == readBarcode) {
@@ -162,9 +158,9 @@
                                 verifyReturn(msg.Mensagem);
                                 if (readBarcode != "")
                                     histLeitura.push(
-                                        `<li style="color:red;">${readBarcode} - ${msg.MensagemErro}</li>`
+                                        `<li style="color:red;">${readBarcode} - ${msg.MSGErro}</li>`
                                     );
-                                mensagemErroG = `${readBarcode} - ${msg.MensagemErro}`
+                                mensagemErroG = `${readBarcode} - ${msg.MSGErro}`
                                 etiquetaInvalida++;
                                 $("#etiquetasInvalidas").text(etiquetaInvalida);
                                 $("#mensagemErroG").text(mensagemErroG)
@@ -176,7 +172,7 @@
                             $("#historicoLeitura").html(histLeitura);
                         })
                         .fail(function (jqXHR, textStatus, msg) {
-                            $("#dangerText").text(msg.MensagemErro);
+                            $("#dangerText").text(msg.MSGErro == null ? 'Erro de comunicação': msg.MSGErro);
                             $("#responseDanger").show();
                         });
                 } else {
