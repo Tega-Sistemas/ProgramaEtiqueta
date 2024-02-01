@@ -146,13 +146,12 @@
                                     );
                                     valReread = false;
                                 } else {
-                                    msg.Mensagem = `${msg.Mensagem}`;
+                                    msg.Mensagem = `Leitura realizadacom sucesso!`;
                                     $("#mensagemErroG").hide();
                                     histLeitura.push(
                                         `<li style="color:#041A56;">${msg.Mensagem} </li>`
                                     );
                                     etiquetaValida++;
-                                    totalEtiquetas--;
                                     $("#etiquetasValidas").text(etiquetaValida);
                                 }
                             } else {
