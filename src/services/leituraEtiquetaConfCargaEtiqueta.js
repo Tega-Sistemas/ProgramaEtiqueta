@@ -46,10 +46,18 @@ totalEtiquetas = vars.totetiquetas;
 qtdeTotalEtiquetas = vars.totetiquetas;
 validaentestoque = vars.validarentrada;
 tatalPedidos = vars.totaletqpedido;
+clienteId = vars.clienteId;
+
+if(clienteId > 0){
+    $("#clienteIdSpan").show();
+} else {
+    $("#clienteIdSpan").hide();
+}
 
 $("#etiquetasToConf").text(qtdeTotalEtiquetas);
 $("#etiquetasValidas").text(etiquetaValida);
 $("#codCarga").text(`${codCarga} ${decodeURI(vars.desccarga)}`);
+$("#clienteId").text(`${clienteId} ${decodeURI(vars.clienteNome)}`);
 $("#nroPedido").text(vars.pedido);
 $("#nomeImp").text(decodeURI(vars.nomeimp));
 $("#descEtiqueta").text(decodeURI(vars.descetiq));
@@ -126,6 +134,7 @@ $("button").click(async function (e) {
         parm.isConfEstoque = validaentestoque == "true";
         parm.UsuarioId = vars.user;
         parm.UsuarioLogin = vars.username;
+        parm.ClienteId = clienteId;
         parm.reqURL = url;
 
         let json = new Object();
@@ -137,7 +146,6 @@ $("button").click(async function (e) {
             data: json,
         });
 
-        //console.log("Codigo Barras: " + readBarcode);
     } else {
         $("#alertText").text("Favor, informar um código de etiqueta");
         $("#responseAlert").show();
