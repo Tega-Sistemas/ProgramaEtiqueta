@@ -67,7 +67,7 @@
         var user = vars.user;
         var pLocalEstoqueId = vars.localEstoque;
         var localEstoqueDesc = vars.localDesc === '' ? `LOCAL DE ETSTOQUE ${pLocalEstoqueId}` : `${pLocalEstoqueId} ${decodeURI(vars.localDesc)}`;
-
+        var isLocalAndSituacaoObrigatorio = vars.obrigarlocalestoque || false;
         var sitEstoque = vars.sitestoque;
         var sitEstoqueDesc = vars.sitestoquedesc === '' ? `SITUAÇÃO DE ESTOQUE: ${sitEstoque}` : decodeURI(vars.sitestoquedesc);
 
@@ -126,6 +126,12 @@
                 var readBarcode = $("#codbarra").val().trim();
                 var estorna = $("#estorna").is(":checked");
                 if (readBarcode != "" && MotivoBaixa != "") {
+                    if (isLocalAndSituacaoObrigatorio && (!pLocalEstoqueId || !sitEstoque || pLocalEstoqueId == 0 || sitEstoque == 0)) {
+                        $("#mensagemErroG").text("Local de estoque e situação de estoque são obrigatórios.");
+                        $("#mensagemErroG").show();
+                        return;
+                    }
+
                     var parm = new Object();
 
                     parm.codigobarras = readBarcode.trim();
