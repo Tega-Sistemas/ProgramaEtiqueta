@@ -126,8 +126,8 @@
                 var readBarcode = $("#codbarra").val().trim();
                 var estorna = $("#estorna").is(":checked");
                 if (readBarcode != "" && MotivoBaixa != "") {
-                    if (isLocalAndSituacaoObrigatorio && (!pLocalEstoqueId || !sitEstoque || pLocalEstoqueId == 0 || sitEstoque == 0)) {
-                        $("#mensagemErroG").text("Local de estoque e situação de estoque são obrigatórios.");
+                    if (isLocalAndSituacaoObrigatorio && (!sitEstoque || sitEstoque == 0)) {
+                        $("#mensagemErroG").text("Situação de estoque é obrigatória.");
                         $("#mensagemErroG").show();
                         return;
                     }
