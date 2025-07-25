@@ -50,6 +50,8 @@ function lostInputFocus() {
     $("#codbarra").focus();
 }
 $(document).ready(function () {
+    $("#codbarra").focus();
+
     $("#clearPage").click(function () {
         document.location.reload(true);
     });
