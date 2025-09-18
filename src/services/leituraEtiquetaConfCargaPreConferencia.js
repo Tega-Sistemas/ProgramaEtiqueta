@@ -29,7 +29,7 @@ $("#etiquetasToConf").text(vars.totetiquetas);
 $("#etiquetasValidas").text(etiquetaValida);
 $("#codCarga").text(`${vars.carga} ${decodeURI(descCarga)}`);
 $("#nroEntrega").text(vars.numentrega);
-url = `${vars.urlApi}rest/pprcLerEtiquetaPreConfCargaRest`;
+url = `${vars.urlApi}confcargaapi/preconferencia/conf`;
 
 $("#estorna").click(() => {
     $("#codbarra").focus();
@@ -105,7 +105,11 @@ $("button").click(function (e) {
             parm.CodigoBarras = readBarcode.trim();
             parm.EntregaNroEntrega = vars.numentrega;
             parm.CargaId = vars.carga;
+            parm.ClienteId = vars.clienteid;
+            parm.PedidoId = vars.pedidoid;
             parm.Estorno = estorna ? 1 : 0;
+            parm.UsuarioId = vars.usuarioid;
+            parm.UsuarioLogin = vars.usuariologin;
 
             requisicoes.push({
                 url: url,
