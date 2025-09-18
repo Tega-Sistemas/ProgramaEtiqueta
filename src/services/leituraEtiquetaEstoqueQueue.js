@@ -41,12 +41,17 @@ function verifyReturn(msg) {
 }
 function lostInputFocus() {
     var validLostInput = $("#codbarra").val();
-    if (validLostInput != "" && validLostInput != null) {
+    /*if (validLostInput != "" && validLostInput != null) {
         $("#button").click();
         $("#codbarra").focus();
-    }
+    }*/
+
+    $("#button").click();
+    $("#codbarra").focus();
 }
 $(document).ready(function () {
+    $("#codbarra").focus();
+
     $("#clearPage").click(function () {
         document.location.reload(true);
     });
