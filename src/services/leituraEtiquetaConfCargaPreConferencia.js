@@ -104,17 +104,20 @@ $("button").click(function (e) {
             var parm = new Object();
             parm.CodigoBarras = readBarcode.trim();
             parm.EntregaNroEntrega = vars.numentrega;
-            parm.CargaId = vars.carga;
-            parm.ClienteId = vars.clienteid;
-            parm.PedidoId = vars.pedidoid;
+            parm.CargaId = vars.carga || 0;
+            parm.ClienteId = vars.clienteid || 0;
+            parm.PedidoId = vars.pedidoid || 0;
             parm.Estorno = estorna ? 1 : 0;
-            parm.UsuarioId = vars.usuarioid;
-            parm.UsuarioLogin = vars.usuariologin;
+            parm.UsuarioId = vars.usuarioid || 0;
+            parm.UsuarioLogin = vars.usuariologin || "";
 
             requisicoes.push({
                 url: url,
                 method: "POST",
                 data: parm,
+                headers: {
+                    'Token': getApiToken()
+                }
             });
         }
     } else {
@@ -190,12 +193,51 @@ function enviarRequisicoesEmOrdem() {
                             }
                         })
                         .catch(function (error) {
+                            let errorMessage = "";
+                            let displayMessage = "";
+                            
+                            // Verifica se é um erro de resposta HTTP (400, 500, etc.)
+                            if (error.response) {
+                                // A requisição foi feita e o servidor respondeu com código de erro
+                                if (error.response.data) {
+                                    // Tenta extrair a mensagem de erro do JSON retornado pela API
+                                    if (error.response.data.MensagemErro) {
+                                        errorMessage = error.response.data.MensagemErro;
+                                    } else if (error.response.data.Mensagem) {
+                                        errorMessage = error.response.data.Mensagem;
+                                    } else if (error.response.data.message) {
+                                        errorMessage = error.response.data.message;
+                                    } else if (typeof error.response.data === 'string') {
+                                        errorMessage = error.response.data;
+                                    } else {
+                                        errorMessage = `Erro HTTP ${error.response.status}: ${error.response.statusText}`;
+                                    }
+                                } else {
+                                    errorMessage = `Erro HTTP ${error.response.status}: ${error.response.statusText}`;
+                                }
+                                
+                                // Processa a mensagem de erro similar ao sucesso
+                                verifyReturn(errorMessage);
+                                displayMessage = `${CodigoBarras} - ${errorMessage}`;
+                                this.mensagemErroG = displayMessage;
+                                this.etiquetaInvalida++;
+                                $("#etiquetasInvalidas").text(this.etiquetaInvalida);
+                                $("#mensagemErroG").text(this.mensagemErroG);
+                                $("#mensagemErroG").show();
+                                
+                            } else if (error.request) {
+                                // A requisição foi feita mas não houve resposta
+                                errorMessage = "Erro de rede: Não foi possível conectar com o servidor";
+                                displayMessage = `${CodigoBarras} - ${errorMessage}`;
+                            } else {
+                                // Algo aconteceu na configuração da requisição
+                                errorMessage = error.message || "Erro desconhecido";
+                                displayMessage = `${CodigoBarras} - ${errorMessage}`;
+                            }
+                            
                             histLeitura.push(
-                                `<li style="color:red;"> Ocorreu um erro inesperado. ${JSON.stringify(
-                                    error
-                                )}</li>`
+                                `<li style="color:red;">${displayMessage}</li>`
                             );
-                            reject(error);
                         })
                         .finally(function () {
                             // remove a promessa da array após a execução
