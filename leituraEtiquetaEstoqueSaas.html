@@ -56,7 +56,8 @@
     }
     vars;
 
-    url = `${vars.urlApi}rest/pprcEtiquetaEntEstoqueLoteNewRest`;
+    // url = `${vars.urlApi}rest/pprcEtiquetaEntEstoqueLoteNewRest`;
+    url = `${vars.urlApi}rest/pprcEtiquetaEntEstoqueLoteOutdatedRest`;
 
     function lostInputFocus() {
       var validLostInput = $("#codbarra").val();
@@ -80,6 +81,7 @@
       $("button").click(function (e) {
         let jaLida = false;
         var readBarcode = $("#codbarra").val();
+        url = `${vars.urlApi}rest/pprcEtiquetaEntEstoqueLoteOutdatedRest`;
 
         etiquetasConferidas.forEach((value) => {
           if (value == readBarcode) {
