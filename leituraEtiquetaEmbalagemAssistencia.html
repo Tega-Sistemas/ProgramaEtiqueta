@@ -14,6 +14,14 @@
             <div class="card">
                 <h1 id="mensagemErroG"></h1>
                 <div class="rowCard">
+                  <div class="subcard">
+                    <div>
+                      <label for="estornarEtiqueta">Estornar etiqueta?</label>
+                      <input id="estornarEtiqueta" type="checkbox" name="estornaretiqueta">
+                    </div>
+                  </div>
+                </div>
+                <div class="rowCard">
                     <div class="subcard">
                         <p class="cargaInfo">CARGA:<span id="CargaId"></span></p>
                         <label>Código de Barras</label>
@@ -78,6 +86,7 @@
         etiquetaValida = vars.TotConf;
         etiquetasToConf = vars.TotCarga - vars.TotConf;
         totalEtiquetas = etiquetasToConf
+      
         $("#etiquetasValidas").text(etiquetaValida);
         $("#etiquetasToConf").text(totalEtiquetas);
         $("#CargaId").text(` ${decodeURI(vars.CargaId)}`);
@@ -118,6 +127,17 @@
             });
             $("button").click(function (e) {
                 hideMsgs();
+                estornarEtiqueta = document.getElementById("estornarEtiqueta");
+                console.log('Valor da CHECKBOX', estornarEtiqueta.checked);
+
+                if (estornarEtiqueta.checked === true) {
+                  url = `${vars.urlapi}rest/pprcEstornarEmbalagemAssistenciaRest`;
+                } else {
+                  url = `${vars.urlapi}rest/pprcConfEmbalagemAssistenciaRest`;
+                }
+
+                console.log('URL: ', url)
+
                 var readBarcode = $("#codbarra").val();
                 if (readBarcode != "") {
                     var parm = new Object();
@@ -125,7 +145,6 @@
                     parm.CargaId = vars.CargaId;
                     parm.Usuario = vars.Usuario;
                     
-                    console.log(JSON.stringify(parm));
                     $.ajax({
                         url: url,
                         method: "POST",
@@ -158,9 +177,14 @@
                                     histLeitura.push(
                                         `<li style="color:#041A56;">${msg.Mensagem} </li>`
                                     );
-                                    etiquetaValida++;
-                                    /* * Diminui a quantidade total de etiquetas conforme a carga é lida */
-                                    totalEtiquetas--;
+                                    if (estornarEtiqueta.checked) {
+                                      etiquetaValida--;
+                                      totalEtiquetas++;
+                                    } else {
+                                      etiquetaValida++;
+                                      /* * Diminui a quantidade total de etiquetas conforme a carga é lida */
+                                      totalEtiquetas--;
+                                    }
                                     $("#etiquetasToConf").text(totalEtiquetas);
                                     $("#etiquetasValidas").text(etiquetaValida);
                                 }
@@ -176,7 +200,6 @@
                                 $("#mensagemErroG").text(mensagemErroG)
                                 $("#mensagemErroG").show();
                             }
-                            console.log(etiquetasToConf);
                             //etiquetasToConf.push(readBarcode);
                             $("#codbarra").focus();
                             $("#historicoLeitura").html(histLeitura);

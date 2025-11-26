@@ -22,13 +22,16 @@ for (var i = 0; i < hashes.length; i++) {
     vars[hash[0]] = hash[1];
 }
 vars;
-var descCarga = vars.desccarga.replace(/%20/g, " ");
-var totalEtiquetas = vars.totetiquetas;
-var etiquetaValida = vars.totconf;
-$("#etiquetasToConf").text(vars.totetiquetas);
+// var descCarga = vars.desccarga.replace(/%20/g, " ");
+// var totalEtiquetas = vars.totetiquetas;
+// var etiquetaValida = vars.totconf;
+var descCarga = vars['desccarga'].replace(/%20/g, " ");
+var totalEtiquetas = vars['totEtiquetas'];
+var etiquetaValida = vars['totconf'];
+$("#etiquetasToConf").text(vars['totEtiquetas']);
 $("#etiquetasValidas").text(etiquetaValida);
-$("#codCarga").text(`${vars.carga} ${decodeURI(descCarga)}`);
-$("#nroEntrega").text(vars.numentrega);
+$("#codCarga").text(`${vars['carga']} ${decodeURI(descCarga)}`);
+$("#nroEntrega").text(vars['numentrega']);
 url = `${vars.urlApi}rest/pprcleretiquetacargarest`;
 //url = url.replace("//rest", "/rest");
 

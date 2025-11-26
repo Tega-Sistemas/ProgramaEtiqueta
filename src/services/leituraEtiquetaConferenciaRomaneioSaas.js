@@ -34,18 +34,18 @@ for (var i = 0; i < hashes.length; i++) {
   vars.push(hash[0]);
   vars[hash[0]] = hash[1];
 }
-vars;
+// vars;
 
-etiquetaValida = vars.totconferido;
-totalEtiquetas = vars.totconferir;
-qtdeTotalEtiquetas = vars.totconferir;
-validaentestoque = vars.validarentrada;
+etiquetaValida = vars['TotConferido'];
+totalEtiquetas = vars['TotConferir'];
+qtdeTotalEtiquetas = vars['TotConferir'];
+// validaentestoque = vars['ValidarEntrada'];
 
 $("#etiquetasToConf").text(qtdeTotalEtiquetas);
 $("#etiquetasValidas").text(etiquetaValida);
 $("#codCarga").text(`${vars.romaneionro} ${decodeURI(vars.romaneiodesc)}`);
 
-url = `${vars.url}rest/setConferenciaEtiquetaRomaneio`;
+url = `${vars['URL']}rest/setConferenciaEtiquetaRomaneio`;
 
 function hideMsgs() {
   $("#responseDanger").hide();

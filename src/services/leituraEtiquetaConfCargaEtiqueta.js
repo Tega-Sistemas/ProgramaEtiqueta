@@ -9,6 +9,7 @@ var etiquetaInvalida = 0;
 var etiquetaDuplicada = 0;
 var qtdePalete = 0;
 var etqConferidas = 0;
+var etiquetasPreConf = 0;
 var histLeitura = [];
 var etiquetasToConf = [];
 var codCarga;
@@ -47,6 +48,10 @@ qtdeTotalEtiquetas = vars.totetiquetas;
 validaentestoque = vars.validarentrada;
 tatalPedidos = vars.totaletqpedido;
 clienteId = vars.clienteId;
+etiquetasPreConf = vars.totaletiqpreconf;
+qtdePalete = vars.totaletiqpreconf;
+
+console.log('VARS: ', vars);
 
 if(clienteId > 0){
     $("#clienteIdSpan").show();
@@ -54,6 +59,8 @@ if(clienteId > 0){
     $("#clienteIdSpan").hide();
 }
 
+$("#etiquetasPreConf").text(etiquetasPreConf);
+$("#qtdePalete").text(qtdePalete);
 $("#etiquetasToConf").text(qtdeTotalEtiquetas);
 $("#etiquetasValidas").text(etiquetaValida);
 $("#codCarga").text(`${codCarga} ${decodeURI(vars.desccarga)}`);

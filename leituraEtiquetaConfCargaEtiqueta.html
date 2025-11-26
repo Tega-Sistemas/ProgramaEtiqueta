@@ -23,6 +23,7 @@
           </div>
           <div class="subcard">
             <div class="contadores">
+              <p>Pré-Conferidas <span id="etiquetasPreConf">0</span></p>
               <p>Conferir <span id="etiquetasToConf">0</span></p>
               <p>Etiquetas Conferidas <span id="etiquetasValidas">0</span></p>
               <p>Etiquetas inválidas <span id="etiquetasInvalidas">0</span></p>
@@ -92,6 +93,8 @@
     var tatalPedidos = vars.totaletqpedido;
     var CountOrder = 0;
 
+    $("#etiquetasPreConf").text(vars['totaletiqpreconf']);
+    $("#qtdePalete").text(vars['totaletiqpreconf']);
     $("#etiquetasToConf").text(vars.totetiquetas);
     $("#etiquetasValidas").text(etiquetaValida);
     $("#codCarga").text(`${codCarga} ${decodeURI(vars.desccarga)}`);
