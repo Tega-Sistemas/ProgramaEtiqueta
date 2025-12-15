@@ -49,7 +49,6 @@ validaentestoque = vars.validarentrada;
 tatalPedidos = vars.totaletqpedido;
 clienteId = vars.clienteId;
 etiquetasPreConf = vars.totaletiqpreconf;
-qtdePalete = vars.totaletiqpreconf;
 
 console.log('VARS: ', vars);
 
