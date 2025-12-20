@@ -84,7 +84,7 @@
         url = `${vars.urlApi}rest/pprcEtiquetaEntEstoqueLoteOutdatedRest`;
 
         etiquetasConferidas.forEach((value) => {
-          if (value == readBarcode) {
+          if (value === readBarcode) {
             jaLida = true;
             return;
           }
@@ -94,9 +94,10 @@
           etiquetasConferidas.push(readBarcode)
           if (readBarcode != "") {
             var parm = new Object();
-            (parm.UsuarioId = vars.user),
-              (parm.EmpresaId = vars.Empresa),
-              (parm.CodigoBarras = readBarcode.trim());
+            parm.UsuarioId = vars.user;
+            parm.EmpresaId = vars.Empresa;
+            parm.ParmLicencaId = vars.LicencaId;
+            parm.CodigoBarras = readBarcode.trim();
             $.ajax({
               url: url,
               method: "POST",
